@@ -1,6 +1,6 @@
 rule fastqc_raw:
     input:
-        lambda w: ou.lookForInputFile(w, samples)
+        lambda w: ou.lookForInputFile(w, sampleSheet)
     output:
         html="raw_metrics/{file}_fastqc.html",
         zip="raw_metrics/{file}_fastqc.zip"

@@ -14,3 +14,7 @@ fastqc_processed:
   mem: "10G"
 fastqc_raw:
   mem: "10G"
+md5:
+  mem: "3G"
+md5_check_raw:
+  mem: "3G"

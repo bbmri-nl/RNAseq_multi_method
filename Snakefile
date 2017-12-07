@@ -1,25 +1,33 @@
 import pandas as pd
 
-
 import ownUtils as ou
 
 
+ou.checkConfig(config)
+
+
 workdir: config["workdir"]
-samples = pd.read_table(config["sampleSheet"], index_col=0)
+sampleSheet = pd.read_table(config["sampleSheet"], index_col=0)
+
+
+onstart:
+    shell("echo Output directory: $(pwd)")
+
+onerror:
+    print("MD5sum checks for inputs: (one might have failed)")
+    shell("cat .md5_check/*.log")
 
 
 rule all:
     input:
-        ou.determineOutput(config, samples)
-
-onsuccess:
-    print("Generating MD5 checksums.")
-    shell("md5sum ./* > md5")
+        ou.determineOutput(config, sampleSheet)
 
 
+include: "rules/md5.smk"
 include: "rules/fastqc.smk"
 include: "rules/merge.smk"
 include: "rules/cutadapt.smk"
+
 
 """
 Results should include:
@@ -32,16 +40,14 @@ output structure:
 md5
 raw_metrics/
     {fastqc output}
-    raw_files.md5
-    -TBD-
 merged/
     {sample}_merged.fastq
 cleaned/
     metrics/
-        -TBD-
+        {fastqc output}
     {sample}_cleaned.fastq
 {mapper}/
-    metrics/
+    metrics/samples
         -TBD-
     {sample}/
         {sample}.bam
@@ -52,7 +58,6 @@ expression_measures_{mapper}/
     {type}/
         {sample}/
             {sample}.fragements_per_gene
-            {sample}.fragements_per_gene.md5
         merged.fragements_per_gene
 {variantcaller}_{mapper}/
     metrics/ ?
