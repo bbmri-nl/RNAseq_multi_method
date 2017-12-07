@@ -1,0 +1,16 @@
+merge_pe:
+  mem: "1G"
+merge_se:
+  mem: "1G"
+sickle_pe:
+  mem: "3G"
+sickle_se:
+  mem: "3G"
+cutadapt_pe:
+  mem: "3G"
+cutadapt_se:
+  mem: "3G"
+fastqc_processed:
+  mem: "10G"
+fastqc_raw:
+  mem: "10G"
