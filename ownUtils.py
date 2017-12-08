@@ -116,8 +116,7 @@ def getBasenames(files):
     return out
 
 
-#TODO bam files
-#TODO bai files
+#TODO bam and bai files (check if it still works when another mapper is added)
 #TODO fragements_per_gene per mapper per sample
 #TODO merged fragements_per_gene per mapper
 def determineOutput(config, sampleSheet):
@@ -151,11 +150,16 @@ def determineOutput(config, sampleSheet):
         "cleaned/metrics/{sample}_cleaned.fastq.gz_fastqc.html",
         "cleaned/metrics/{sample}_cleaned_{group}.fastq.gz_fastqc.html")
 
-    # bam files
+    # bam and bai files
     for mapper in mappers:
         out += getFilePerSample(samples, sampleSheet,
             "{mapper}/{sample}/{sample}_{mapper}.bam",
             mapper=mapper)
+        out += getFilePerSample(samples, sampleSheet,
+            "{mapper}/{sample}/{sample}_{mapper}.bam.bai",
+            mapper=mapper)
+
+        #NOTE counting should be added per mapper, so should be in this loop
 
     # get md5 files and add them
     out += expand("{file}.md5", file=out)

@@ -35,6 +35,7 @@ include: "rules/fastqc.smk"
 include: "rules/merge.smk"
 include: "rules/cutadapt.smk"
 include: "rules/star.smk"
+include: "rules/bam_index.smk"
 
 
 """
