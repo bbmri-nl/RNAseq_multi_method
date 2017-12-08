@@ -14,8 +14,15 @@ onstart:
     shell("echo Output directory: $(pwd)")
 
 onerror:
-    print("MD5sum checks for inputs: (one might have failed)")
+    print("\n\nPIPELINE FAILED\n")
+    print("Potential reasons for failure:")
+    print("- faulty config file")
+    print("- faulty sample sheet")
+    print("- missing inputs")
+    print("- Mismatching MD5sums for inputs")
+    print("MD5sum checks for inputs:")
     shell("cat .md5_check/*.log")
+    print("\n")
 
 
 rule all:
@@ -27,6 +34,7 @@ include: "rules/md5.smk"
 include: "rules/fastqc.smk"
 include: "rules/merge.smk"
 include: "rules/cutadapt.smk"
+include: "rules/star.smk"
 
 
 """
@@ -37,7 +45,6 @@ Results should include:
 - merged fastq per sample
 
 output structure:
-md5
 raw_metrics/
     {fastqc output}
 merged/
@@ -50,8 +57,8 @@ cleaned/
     metrics/samples
         -TBD-
     {sample}/
-        {sample}.bam
-        {sample}.bam.bai
+        {sample}_{mapper}.bam
+        {sample}_{mapper}.bam.bai
 expression_measures_{mapper}/
     metrics/
         -TBD-

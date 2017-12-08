@@ -7,13 +7,26 @@ rule cutadapt_pe:
         fastq2="cleaned/{sample}_cleaned_2.fastq.gz",
         qc="cleaned/{sample}.qc.txt"
     params:
-        "-q {},{} {} {}".format(config["cutadapt"]["quality_threshold"],
-            config["cutadapt"]["quality_threshold"],
-            ou.adaptersAsParams(config), config["cutadapt"]["params"])
+        adaptors=ou.adaptersAsParams(config),
+        qual=config["cutadapt"]["quality_threshold"],
+        minlen=config["cutadapt"]["minimum_readlength"],
+        extra=config["cutadapt"]["params"]
+    threads: config["cutadapt"]["threads"]
+    conda: "../envs/cutadapt.yml"
     log:
         "logs/cutadapt_pe/{sample}.log"
-    wrapper:
-        "0.17.4/bio/cutadapt/pe"
+    shell:
+        "cutadapt {params.extra} "
+        "-q {params.qual},{params.qual} "
+        "-m {params.minlen} "
+        "-j {threads} "
+        "{params.adaptors} "
+        "-o {output.fastq1} "
+        "-p {output.fastq2} "
+        "{input} "
+        "> {output.qc} 2> {log}"
+
+
 
 rule cutadapt_se:
     input:
@@ -22,10 +35,20 @@ rule cutadapt_se:
         fastq="cleaned/{sample}_cleaned.fastq.gz",
         qc="cleaned/{sample}.qc.txt"
     params:
-        "-q {},{} {} {}".format(config["cutadapt"]["quality_threshold"],
-            config["cutadapt"]["quality_threshold"],
-            ou.adaptersAsParams(config), config["cutadapt"]["params"])
+        adaptors=ou.adaptersAsParams(config),
+        qual=config["cutadapt"]["quality_threshold"],
+        minlen=config["cutadapt"]["minimum_readlength"],
+        extra=config["cutadapt"]["params"]
+    threads: config["cutadapt"]["threads"]
+    conda: "../envs/cutadapt.yml"
     log:
         "logs/cutadapt_se/{sample}.log"
-    wrapper:
-        "0.17.4/bio/cutadapt/se"
+    shell:
+        "cutadapt {params.extra} "
+        "-q {params.qual},{params.qual} "
+        "-m {params.minlen} "
+        "-j {threads} "
+        "{params.adaptors} "
+        "-o {output.fastq} "
+        "{input} "
+        "> {output.qc} 2> {log}"

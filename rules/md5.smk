@@ -4,7 +4,7 @@ rule md5:
     output:
         "{file}.md5"
     shell:
-        "md5sum {input} > {output}"
+        "md5sum $(pwd)/{input} > {output}"
 
 
 rule md5_check_raw:

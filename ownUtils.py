@@ -6,7 +6,7 @@ from snakemake.io import expand
 
 #TODO check config
 def checkConfig(config):
-    print("Config checking is not included yet.")
+    print("Config checking is not included yet.", file=stderr)
 
 
 def getMD5FromSampleSheet(wildcards, sampleSheet):
@@ -90,7 +90,7 @@ def isSingleEnd(x, sampleSheet):
         return out
 
 
-def getFilePerSample(form1, form2, sampleSheet, samples):
+def getFilePerSample(samples, sampleSheet, form1, form2=None, **kwargs):
     """
     This function generates a list of filenames. For each sample
     a filename will be generated according to form1. If a sample
@@ -99,10 +99,10 @@ def getFilePerSample(form1, form2, sampleSheet, samples):
     """
     out = []
     for x in samples:
-        if isSingleEnd(x, sampleSheet):
-            out.append(form1.format(sample=x))
+        if isSingleEnd(x, sampleSheet) or form2==None:
+            out.append(form1.format(sample=x, **kwargs))
         else:
-            out += expand(form2, sample=x, group=[1,2])
+            out += expand(form2, sample=x, group=[1,2], **kwargs)
     return out
 
 
@@ -137,22 +137,25 @@ def determineOutput(config, sampleSheet):
         file=getBasenames(inputs))
 
     # merged fastq files
-    out += getFilePerSample(
+    out += getFilePerSample(samples, sampleSheet,
         "merged/{sample}_merged.fastq.gz",
-        "merged/{sample}_merged_{group}.fastq.gz",
-        sampleSheet, samples)
+        "merged/{sample}_merged_{group}.fastq.gz")
 
     # cleaned fastq files
-    out += getFilePerSample(
+    out += getFilePerSample(samples, sampleSheet,
         "cleaned/{sample}_cleaned.fastq.gz",
-        "cleaned/{sample}_cleaned_{group}.fastq.gz",
-        sampleSheet, samples)
+        "cleaned/{sample}_cleaned_{group}.fastq.gz")
 
     # cleaned fastqc resulst
-    out += getFilePerSample(
+    out += getFilePerSample(samples, sampleSheet,
         "cleaned/metrics/{sample}_cleaned.fastq.gz_fastqc.html",
-        "cleaned/metrics/{sample}_cleaned_{group}.fastq.gz_fastqc.html",
-        sampleSheet, samples)
+        "cleaned/metrics/{sample}_cleaned_{group}.fastq.gz_fastqc.html")
+
+    # bam files
+    for mapper in mappers:
+        out += getFilePerSample(samples, sampleSheet,
+            "{mapper}/{sample}/{sample}_{mapper}.bam",
+            mapper=mapper)
 
     # get md5 files and add them
     out += expand("{file}.md5", file=out)

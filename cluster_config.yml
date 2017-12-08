@@ -18,3 +18,5 @@ md5:
   mem: "3G"
 md5_check_raw:
   mem: "3G"
+star:
+  mem: "10G"
