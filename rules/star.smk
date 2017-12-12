@@ -3,8 +3,8 @@
 rule star:
     input:
         lambda w: ou.getFilePerSample([w.sample], sampleSheet,
-            "cleaned/{sample}_cleaned.fastq.gz",
-            "cleaned/{sample}_cleaned_{group}.fastq.gz")
+            "merged/{sample}_merged.fastq.gz",
+            "merged/{sample}_merged_{group}.fastq.gz")
     output:
         "star/{sample}/{sample}_star.bam",
     params:

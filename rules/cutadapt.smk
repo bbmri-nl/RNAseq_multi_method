@@ -1,11 +1,10 @@
 rule cutadapt_pe:
     input:
-        "merged/{sample}_merged_1.fastq.gz",
-        "merged/{sample}_merged_2.fastq.gz"
+        lambda w: ou.getFastq(w, sampleSheet)
     output:
-        fastq1="cleaned/{sample}_cleaned_1.fastq.gz",
-        fastq2="cleaned/{sample}_cleaned_2.fastq.gz",
-        qc="cleaned/{sample}.qc.txt"
+        fastq1="cleaned/{sample}_{lane}_cleaned_1.fastq.gz",
+        fastq2="cleaned/{sample}_{lane}_cleaned_2.fastq.gz",
+        qc="cleaned/{sample}_{lane}.qc.txt"
     params:
         adaptors=ou.adaptersAsParams(config),
         qual=config["cutadapt"]["quality_threshold"],
@@ -14,7 +13,7 @@ rule cutadapt_pe:
     threads: config["cutadapt"]["threads"]
     conda: "../envs/cutadapt.yml"
     log:
-        "logs/cutadapt_pe/{sample}.log"
+        "logs/cutadapt_pe/{sample}_{lane}.log"
     shell:
         "cutadapt {params.extra} "
         "-q {params.qual},{params.qual} "
@@ -27,13 +26,12 @@ rule cutadapt_pe:
         "> {output.qc} 2> {log}"
 
 
-
 rule cutadapt_se:
     input:
-        "merged/{sample}_merged.fastq.gz",
+        lambda w: ou.getFastq(w, sampleSheet)
     output:
-        fastq="cleaned/{sample}_cleaned.fastq.gz",
-        qc="cleaned/{sample}.qc.txt"
+        fastq="cleaned/{sample}_{lane}_cleaned.fastq.gz",
+        qc="cleaned/{sample}_{lane}.qc.txt"
     params:
         adaptors=ou.adaptersAsParams(config),
         qual=config["cutadapt"]["quality_threshold"],
@@ -42,7 +40,7 @@ rule cutadapt_se:
     threads: config["cutadapt"]["threads"]
     conda: "../envs/cutadapt.yml"
     log:
-        "logs/cutadapt_se/{sample}.log"
+        "logs/cutadapt_se/{sample}_{lane}.log"
     shell:
         "cutadapt {params.extra} "
         "-q {params.qual},{params.qual} "

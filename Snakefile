@@ -7,7 +7,7 @@ ou.checkConfig(config)
 
 
 workdir: config["workdir"]
-sampleSheet = pd.read_table(config["sampleSheet"], index_col=0)
+sampleSheet = pd.read_table(config["sampleSheet"], index_col=[0,1])
 
 
 onstart:

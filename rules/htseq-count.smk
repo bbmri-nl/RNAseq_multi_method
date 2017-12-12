@@ -9,12 +9,13 @@ rule htseq_fpg:
         idField=config["counting"]["fragments_per_gene"]["id_field"],
         extra=config["counting"]["fragments_per_gene"]["params"]
     log:
-        "logs/htseq_fpq/{mapper}/{sample}.log"
+        "logs/htseq_fpg/{mapper}/{sample}.log"
     conda: "../envs/htseq.yml"
     shell:
         "htseq-count -f bam -r pos -i {params.idField} "
         "-s {params.stranded} {params.extra} {input} "
-        "{params.gff} > {output} 2> {log}"
+        "{params.gff} > {output} 2> {log} && "
+        "sed -i '1s/^/feature\\t{wildcards.sample}\\n/' {output}"
 
 
 rule htseq_fpe:

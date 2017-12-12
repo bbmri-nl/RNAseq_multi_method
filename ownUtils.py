@@ -4,9 +4,11 @@ from sys import stderr
 import pandas as pd
 from snakemake.io import expand
 
+
 #TODO check config
 def checkConfig(config):
-    print("Config checking is not included yet.", file=stderr)
+    pass
+    #print("Config checking is not included yet.", file=stderr)
 
 
 def getMD5FromSampleSheet(wildcards, sampleSheet):
@@ -15,10 +17,10 @@ def getMD5FromSampleSheet(wildcards, sampleSheet):
     """
     full_path = lookForInputFile(wildcards, sampleSheet)
     row = sampleSheet.loc[sampleSheet["R1"] == full_path]
-    md5_i = 2
+    md5_i = 1
     if len(row) == 0:
         row = sampleSheet.loc[sampleSheet["R2"] == full_path]
-        md5_i = 4
+        md5_i = 3
     return row.iat[0,md5_i]
 
 
@@ -34,7 +36,7 @@ def getInputs(sampleSheet):
 
 def lookForInputFile(wildcards, sampleSheet):
     """
-    This function retrives the full path for a file from the
+    This function retrieves the full path for a file from the
     samplesheet.
     """
     inputs = getInputs(sampleSheet)
@@ -42,20 +44,16 @@ def lookForInputFile(wildcards, sampleSheet):
         if wildcards.file == basename(x):
             return x
 
-
-def get_fastq(wildcards, sampleSheet):
+#TODO (DONE?) change this to retrieve specific lane >>> samplesheet.loc["B", "L2"]["R1"]
+def getFastq(wildcards, sampleSheet):
     """
-    This function retrieves the file path(s) for a specific sample
-    (forward/reverse combination).
+    This function retrieves the file path(s) for a specific sample/lane
+    combination (both forward and reverse).
     """
-    try:
-        field = "R{}".format(wildcards.group)
-    except AttributeError:
-        field = "R1"
-    result = sampleSheet.loc[wildcards.sample, field]
-    if type(result) == str:
-        return [result]
-    return result.tolist()
+    result = [sampleSheet.loc[wildcards.sample, wildcards.lane]["R1"]]
+    if not isSingleEnd(wildcards.sample, sampleSheet):
+        result.append(sampleSheet.loc[wildcards.sample, wildcards.lane]["R2"])
+    return result
 
 
 def adaptersAsParams(config):
@@ -78,11 +76,11 @@ def adaptersAsParams(config):
     return out
 
 
-def isSingleEnd(x, sampleSheet):
+def isSingleEnd(sample, sampleSheet):
     """
     This function checks whether a sample is paired- or single-end.
     """
-    out = pd.isnull(sampleSheet.loc[x, "R2"])
+    out = pd.isnull(sampleSheet.loc[sample, "R2"])
     try:
         out2 = out.any()
         return out2
@@ -100,10 +98,14 @@ def getFilePerSample(samples, sampleSheet, form1, form2=None, **kwargs):
     out = []
     for x in samples:
         if isSingleEnd(x, sampleSheet) or form2==None:
-            out.append(form1.format(sample=x, **kwargs))
+            out += expand(form1, sample=x, **kwargs)
         else:
             out += expand(form2, sample=x, group=[1,2], **kwargs)
     return out
+
+
+def getLanesForSample(sample, sampleSheet):
+    return sampleSheet.loc[sample].index.tolist()
 
 
 def getBasenames(files):
@@ -117,7 +119,7 @@ def getBasenames(files):
 
 
 #TODO bam and bai files (check if it still works when another mapper is added)
-#TODO fragements_per_gene per mapper per sample
+#TODO fragements_per_gene per mapper per sample 9check if it still works when another mapper is added)
 #TODO merged fragements_per_gene per mapper
 def determineOutput(config, sampleSheet):
     """
@@ -126,7 +128,7 @@ def determineOutput(config, sampleSheet):
     """
     mappers = config["mappers"].keys()
     countTypes = config["counting"].keys()
-    samples = set(sampleSheet.index.tolist())
+    samples = set(sampleSheet.index.levels[0].tolist())
     inputs = getInputs(sampleSheet)
     out = []
 
@@ -136,20 +138,23 @@ def determineOutput(config, sampleSheet):
     out += expand("raw_metrics/{file}_fastqc.zip",
         file=getBasenames(inputs))
 
+    # cleaned fastq files
+    for sample in samples:
+        out += getFilePerSample([sample], sampleSheet,
+            "cleaned/{sample}_{lane}_cleaned.fastq.gz",
+            "cleaned/{sample}_{lane}_cleaned_{group}.fastq.gz",
+            lane=getLanesForSample(sample, sampleSheet))
+
+        # cleaned fastqc resulst
+        out += getFilePerSample([sample], sampleSheet,
+            "cleaned/metrics/{sample}_{lane}_cleaned.fastq.gz_fastqc.html",
+            "cleaned/metrics/{sample}_{lane}_cleaned_{group}.fastq.gz_fastqc.html",
+            lane=getLanesForSample(sample, sampleSheet))
+
     # merged fastq files
     out += getFilePerSample(samples, sampleSheet,
         "merged/{sample}_merged.fastq.gz",
         "merged/{sample}_merged_{group}.fastq.gz")
-
-    # cleaned fastq files
-    out += getFilePerSample(samples, sampleSheet,
-        "cleaned/{sample}_cleaned.fastq.gz",
-        "cleaned/{sample}_cleaned_{group}.fastq.gz")
-
-    # cleaned fastqc resulst
-    out += getFilePerSample(samples, sampleSheet,
-        "cleaned/metrics/{sample}_cleaned.fastq.gz_fastqc.html",
-        "cleaned/metrics/{sample}_cleaned_{group}.fastq.gz_fastqc.html")
 
     # bam and bai files
     for mapper in mappers:
