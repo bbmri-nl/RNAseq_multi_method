@@ -22,3 +22,7 @@ star:
   mem: "10G"
 bam_index:
   mem: "3G"
+htseq_fpg:
+  mem: "3G"
+htseq_fpe:
+  mem: "3G"

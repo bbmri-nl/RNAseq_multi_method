@@ -125,6 +125,7 @@ def determineOutput(config, sampleSheet):
     made by the snakemake pipeline.
     """
     mappers = config["mappers"].keys()
+    countTypes = config["counting"].keys()
     samples = set(sampleSheet.index.tolist())
     inputs = getInputs(sampleSheet)
     out = []
@@ -159,7 +160,12 @@ def determineOutput(config, sampleSheet):
             "{mapper}/{sample}/{sample}_{mapper}.bam.bai",
             mapper=mapper)
 
-        #NOTE counting should be added per mapper, so should be in this loop
+        for countType in countTypes:
+            out += getFilePerSample(samples, sampleSheet,
+            "expression_measures_{mapper}/{countType}/"
+            "{sample}/{sample}.{countType}", mapper=mapper,
+            countType=countType)
+        #TODO add merged
 
     # get md5 files and add them
     out += expand("{file}.md5", file=out)

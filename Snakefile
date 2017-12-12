@@ -36,6 +36,7 @@ include: "rules/merge.smk"
 include: "rules/cutadapt.smk"
 include: "rules/star.smk"
 include: "rules/bam_index.smk"
+include: "rules/htseq-count.smk"
 
 
 """
@@ -73,13 +74,14 @@ expression_measures_{mapper}/
     {sample}.{variantcaller}.vcf.md5
 """
 
+#TODO: change order of steps: merge after QC
 """
 QC (fastqc)
-merge fastq
 cutadapt
 QC (fastqc)
+merge fastq
 mappers
-QC (rseqc?)
+QC
 htseq count per mapper
 other counts methods per mapper ? (featurecounts)
 variantcallers per mapper ?
