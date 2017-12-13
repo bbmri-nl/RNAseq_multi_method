@@ -32,11 +32,12 @@ rule all:
 
 include: "rules/md5.smk"
 include: "rules/fastqc.smk"
-include: "rules/merge.smk"
+include: "rules/merge_fastq.smk"
 include: "rules/cutadapt.smk"
 include: "rules/star.smk"
 include: "rules/bam_index.smk"
 include: "rules/htseq-count.smk"
+include: "rules/merge_counts.smk"
 
 
 """

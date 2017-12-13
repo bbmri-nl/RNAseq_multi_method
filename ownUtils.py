@@ -170,6 +170,10 @@ def determineOutput(config, sampleSheet):
             "expression_measures_{mapper}/{countType}/"
             "{sample}/{sample}.{countType}", mapper=mapper,
             countType=countType)
+            out.append(
+                "expression_measures_{mapper}/{countType}/"
+                "all_samples.{countType}".format(mapper=mapper,
+                countType=countType))
         #TODO add merged
 
     # get md5 files and add them

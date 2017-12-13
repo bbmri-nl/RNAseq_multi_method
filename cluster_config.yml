@@ -1,6 +1,6 @@
-merge_pe:
+merge_fastq_pe:
   mem: "1G"
-merge_se:
+merge_fastq_se:
   mem: "1G"
 sickle_pe:
   mem: "3G"
@@ -26,3 +26,5 @@ htseq_fpg:
   mem: "3G"
 htseq_fpe:
   mem: "3G"
+merge_counts:
+  mem: "10G"

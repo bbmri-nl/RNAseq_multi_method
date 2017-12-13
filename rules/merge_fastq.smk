@@ -1,4 +1,4 @@
-rule merge_pe:
+rule merge_fastq_pe:
     input:
         lambda w: ou.getFilePerSample([w.sample], sampleSheet,
             "cleaned/{sample}_{lane}_cleaned.fastq.gz",
@@ -9,7 +9,7 @@ rule merge_pe:
     shell:
         "cat {input} > {output}"
 
-rule merge_se:
+rule merge_fastq_se:
     input:
         lambda w: ou.getFilePerSample([w.sample], sampleSheet,
             "cleaned/{sample}_{lane}_cleaned.fastq.gz",

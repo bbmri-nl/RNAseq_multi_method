@@ -15,7 +15,7 @@ rule htseq_fpg:
         "htseq-count -f bam -r pos -i {params.idField} "
         "-s {params.stranded} {params.extra} {input} "
         "{params.gff} > {output} 2> {log} && "
-        "sed -i '1s/^/feature\\t{wildcards.sample}\\n/' {output}"
+        "sed -i '1s/^/feature\\tcounts\\n/' {output}"
 
 
 rule htseq_fpe:
@@ -34,6 +34,7 @@ rule htseq_fpe:
     shell:
         "htseq-count -f bam -r pos -i {params.idField} "
         "-s {params.stranded} {params.extra} {input} "
-        "{params.gff} > {output} 2> {log}"
+        "{params.gff} > {output} 2> {log} && "
+        "sed -i '1s/^/feature\\tcounts\\n/' {output}"
 
 #fragements_per_exon
