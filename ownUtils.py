@@ -97,7 +97,7 @@ def getFilePerSample(samples, sampleSheet, form1, form2=None, **kwargs):
     """
     out = []
     for x in samples:
-        if isSingleEnd(x, sampleSheet) or form2==None:
+        if form2==None or isSingleEnd(x, sampleSheet):
             out += expand(form1, sample=x, **kwargs)
         else:
             out += expand(form2, sample=x, group=[1,2], **kwargs)
