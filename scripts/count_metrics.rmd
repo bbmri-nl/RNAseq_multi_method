@@ -61,7 +61,7 @@ path <- "/exports/sasc/dcats/snakemake/testOut/expression_measures_star/fragment
 counts <- read.csv(path, header = T, sep="\t", row.names = "feature")
 
 # for testing
-for (x in 3:3){
+for (x in 3:500){
     counts[x] <- counts$A * (x/100+1)
 }
 ```
@@ -84,8 +84,8 @@ p <- ggplot(summary, aes(x=sample, y=count, fill=feature))
 p <- p + theme(axis.text.x = element_text( angle = 90, hjust = 0.5, vjust = 0.5))
 p2 <- p + geom_col(color= "gray", position=position_stack(reverse = T), width=1)
 p2 <- p2 + ggtitle("Alignment summary")
-if (ncol(counts) > 5){
-    subchunkify(p2, 5, ncol(counts)/2+1)
+if (ncol(counts) > 16){
+    subchunkify(p2, 5, ncol(counts)/4+1)
 } else {
     subchunkify(p2, 5, 5)
 }
@@ -95,8 +95,8 @@ if (ncol(counts) > 5){
 p3 <- p + geom_col(color= "gray", position=position_fill(reverse = T), width=1)
 p3 <- p3 + scale_y_continuous(labels = scales::percent)
 p3 <- p3 + ggtitle("Relative alignment summary")
-if (ncol(counts) > 5){
-    subchunkify(p3, 5, ncol(counts)/2+1)
+if (ncol(counts) > 16){
+    subchunkify(p3, 5, ncol(counts)/4+1)
 } else {
     subchunkify(p3, 5, 5)
 }
