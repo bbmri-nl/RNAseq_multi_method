@@ -23,8 +23,10 @@ d <- do.call( rbind, lapply( listOfFiles, function( file ) {
  d <- read.table( file, header = TRUE , comment.char = "#")
  #fileName <- colnames(d)[measureVars]
  #substrings <- unlist(strsplit(fileName, "\\."))
- colnames(d)[measureVars] <- strsplit(file, "/")[[1]][3] 
- d <- d %>% melt( id.vars = idVars, measure.vars=measureVars, variable.name = "sample", value.name = "count" )
+ colI <- grep(measureVars, colnames(d))
+ colnames(d)[colI] <- strsplit(file, "/")[[1]][3]
+ d <- d %>% melt( id.vars = idVars, measure.vars=colI,
+   variable.name = "sample", value.name = "count" )
 
 } ) )
 

@@ -126,8 +126,10 @@ def determineOutput(config, sampleSheet):
     This function determines what output files need to be
     made by the snakemake pipeline.
     """
-    mappers = config["mappers"].keys()
-    countTypes = config["counting"].keys()
+    mappers = [x for x in config["mappers"].keys()
+        if config["mappers"][x]["include"]]
+    countTypes = [x for x in config["counting"].keys()
+        if config["counting"][x]["include"]]
     samples = set(sampleSheet.index.levels[0].tolist())
     inputs = getInputs(sampleSheet)
     out = []

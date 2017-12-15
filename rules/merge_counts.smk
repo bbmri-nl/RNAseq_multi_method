@@ -9,5 +9,5 @@ rule merge_counts:
     conda: "../envs/R.yml"
     params:
         idVars="feature",
-        measureVars=2
+        measureVars="counts"
     script: "../scripts/merge_counts.R"

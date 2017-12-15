@@ -20,6 +20,8 @@ md5_check_raw:
   mem: "3G"
 star:
   mem: "10G"
+star2pass:
+  mem: "10G"
 bam_index:
   mem: "3G"
 htseq_fpg:

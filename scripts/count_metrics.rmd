@@ -1,0 +1,149 @@
+---
+title: "Count Metrics"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    number_sections: true
+    code_folding: hide
+---
+
+<style>
+pre {
+  overflow-x: auto;
+}
+pre code {
+  word-wrap: normal;
+  white-space: pre;
+}
+p {
+  overflow-x: auto;
+}
+img {
+    max-width: none;
+}
+</style>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# This has not been implemented yet and needs to be edited to be compatible
+# with snakemake.
+
+# STAR quant mode gives N_ as special feature indicator
+```
+
+```{r}
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(dplyr))
+
+# The function below is used to make images dynamically larger if needed
+subchunkify <- function(g, fig_height=7, fig_width=5) { #http://michaeljw.com/blog/post/subchunkify/
+  g_deparsed <- paste0(deparse(
+    function() {g}
+  ), collapse = '')
+
+  sub_chunk <- paste0("
+  `","``{r sub_chunk_", floor(runif(1) * 10000), ", fig.height=",
+   fig_height, ", fig.width=", fig_width, ", echo=FALSE}",
+  "\n(",
+    g_deparsed
+    , ")()",
+  "\n`","``
+  ")
+
+  cat(knitr::knit(text = knitr::knit_expand(text = sub_chunk), quiet = TRUE))
+}
+
+path <- "/exports/sasc/dcats/snakemake/testOut/expression_measures_star/fragments_per_gene/all_samples.fragments_per_gene"
+counts <- read.csv(path, header = T, sep="\t", row.names = "feature")
+
+# for testing
+for (x in 3:3){
+    counts[x] <- counts$A * (x/100+1)
+}
+```
+
+# Alignment Summary
+
+```{r results='asis'}
+specialFeatures <- rownames(counts)[ grepl( "^__", rownames(counts) ) ]
+summary <- expand.grid(feature=c("aligned", specialFeatures), sample=colnames(counts))
+summary$count <- apply(summary, 1, function(x, raw){
+    if (x["feature"] %in% rownames(raw)) {
+        return(raw[x["feature"], x["sample"]])
+    } else {
+        features <- rownames(raw)[! grepl("^__", rownames(raw))]
+        return(sum(raw[features, x["sample"]]))
+    }
+  }, counts)
+
+p <- ggplot(summary, aes(x=sample, y=count, fill=feature))
+p <- p + theme(axis.text.x = element_text( angle = 90, hjust = 0.5, vjust = 0.5))
+p2 <- p + geom_col(color= "gray", position=position_stack(reverse = T), width=1)
+p2 <- p2 + ggtitle("Alignment summary")
+if (ncol(counts) > 5){
+    subchunkify(p2, 5, ncol(counts)/2+1)
+} else {
+    subchunkify(p2, 5, 5)
+}
+```
+
+```{r results='asis'}
+p3 <- p + geom_col(color= "gray", position=position_fill(reverse = T), width=1)
+p3 <- p3 + scale_y_continuous(labels = scales::percent)
+p3 <- p3 + ggtitle("Relative alignment summary")
+if (ncol(counts) > 5){
+    subchunkify(p3, 5, ncol(counts)/2+1)
+} else {
+    subchunkify(p3, 5, 5)
+}
+```
+
+# Complexity
+```{r results='asis'}
+features <- rownames(counts)[ ! grepl( "^__", rownames(counts) ) ]
+ranks <- c(1:1000)
+rankFraction <- expand.grid(rank=ranks, sample=colnames(counts))
+for (x in colnames(counts)){
+    values <- as.vector(counts[features,x])
+    sorted <- sort(values, T)
+    total <- sum(sorted)
+    rankFraction[rankFraction$sample == x, "value"] <- cumsum(sorted)[1:1000]
+    rankFraction[rankFraction$sample == x, "fraction"] <- rankFraction[rankFraction$sample == x, "value"] /total
+}
+
+dText <- rankFraction %>%
+    filter( rank <= 15) %>%
+    group_by_(.dots="sample") %>%
+    sample_n(2) %>%
+    ungroup()
+
+
+p <- ggplot(rankFraction, aes(x=rank, y=value, color=sample, label=sample))
+p <- p + geom_line(alpha=0.2)
+p <- p + geom_point(alpha=0.1)
+p <- p + scale_x_log10(limits = c(1, 1000), breaks = c(1, 10, 100, 1000, 10000, 100000))
+p <- p + geom_text(data = dText, size = 3);
+p <- p + ylab("Cumulative reads till Rank")
+p <- p + theme_bw()
+p <- p + annotation_logticks(sides = "tb")
+p <- p + guides(color=F)
+p
+```
+
+```{r result='asis'}
+p <- ggplot(rankFraction, aes(x=rank, y=fraction, color=sample, label=sample))
+p <- p + geom_line(alpha=0.2)
+p <- p + geom_point(alpha=0.1)
+p <- p + scale_x_log10(limits = c(1, 1000), breaks = c(1, 10, 100, 1000, 10000, 100000))
+p <- p + scale_y_continuous(labels = scales::percent)
+p <- p + geom_text(data = dText, size = 3);
+p <- p + ylab("Cumulative fraction of total reads till Rank")
+p <- p + theme_bw()
+p <- p + annotation_logticks(sides = "tb")
+p <- p + guides(color=F)
+p
+```
