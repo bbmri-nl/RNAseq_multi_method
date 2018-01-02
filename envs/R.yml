@@ -7,3 +7,5 @@ dependencies:
   - r-base = 3.4.2
   - r-dplyr = 0.7.4
   - r-reshape2  = 1.4.2
+  - r-ggplot2 = 2.2.1
+  - r-rmarkdown = 1.6

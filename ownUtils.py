@@ -167,6 +167,7 @@ def determineOutput(config, sampleSheet):
             "{mapper}/{sample}/{sample}_{mapper}.bam.bai",
             mapper=mapper)
 
+        # count tables
         for countType in countTypes:
             out += getFilePerSample(samples, sampleSheet,
             "expression_measures_{mapper}/{countType}/"
@@ -176,7 +177,17 @@ def determineOutput(config, sampleSheet):
                 "expression_measures_{mapper}/{countType}/"
                 "all_samples.{countType}".format(mapper=mapper,
                 countType=countType))
-        #TODO add merged
+
+            # count metrics
+            out.append("expression_measures_{mapper}/{countType}/"
+                "metrics/metrics.html".format(mapper=mapper,
+                countType=countType))
+            out.append("expression_measures_{mapper}/{countType}/"
+                "metrics/alignmentSummary.tsv".format(mapper=mapper,
+                countType=countType))
+            out.append("expression_measures_{mapper}/{countType}/"
+                "metrics/alignmentSummaryPercentages.tsv".format(mapper=mapper,
+                countType=countType))
 
     # get md5 files and add them
     out += expand("{file}.md5", file=out)

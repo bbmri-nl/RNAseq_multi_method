@@ -4,7 +4,7 @@ import ownUtils as ou
 
 
 ou.checkConfig(config)
-
+source=srcdir("")
 
 workdir: config["workdir"]
 sampleSheet = pd.read_table(config["sampleSheet"], index_col=[0,1])
@@ -38,6 +38,7 @@ include: "rules/star.smk"
 include: "rules/bam_index.smk"
 include: "rules/htseq-count.smk"
 include: "rules/merge_counts.smk"
+include: "rules/count_metrics.smk"
 
 
 """
@@ -63,12 +64,12 @@ cleaned/
         {sample}_{mapper}.bam
         {sample}_{mapper}.bam.bai
 expression_measures_{mapper}/
-    metrics/
-        -TBD-
     {type}/
+        metrics/
+            -TBD-
         {sample}/
             {sample}.fragements_per_gene
-        merged.fragements_per_gene
+        all_samples.fragements_per_gene
 {variantcaller}_{mapper}/
     metrics/ ?
     {sample}.{variantcaller}.vcf

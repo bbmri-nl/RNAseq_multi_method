@@ -30,3 +30,5 @@ htseq_fpe:
   mem: "3G"
 merge_counts:
   mem: "10G"
+count_metrics:
+  mem: "10G"

@@ -7,6 +7,11 @@ output:
       collapsed: false
     number_sections: true
     code_folding: hide
+params:
+    input: NA
+    sumTable: NA
+    sumTablePerc: NA
+    type: NA
 ---
 
 <style>
@@ -38,6 +43,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 suppressPackageStartupMessages(library(ggplot2))
 suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(reshape2))
 
 # The function below is used to make images dynamically larger if needed
 subchunkify <- function(g, fig_height=7, fig_width=5) { #http://michaeljw.com/blog/post/subchunkify/
@@ -57,18 +63,30 @@ subchunkify <- function(g, fig_height=7, fig_width=5) { #http://michaeljw.com/bl
   cat(knitr::knit(text = knitr::knit_expand(text = sub_chunk), quiet = TRUE))
 }
 
-path <- "/exports/sasc/dcats/snakemake/testOut/expression_measures_star/fragments_per_gene/all_samples.fragments_per_gene"
+path <- params$input
 counts <- read.csv(path, header = T, sep="\t", row.names = "feature")
 
 # for testing
-for (x in 3:500){
-    counts[x] <- counts$A * (x/100+1)
-}
+#for (x in 3:800){
+#    counts[x] <- counts$A * (x/100+1)
+#}
 ```
 
-# Alignment Summary
+# subsetting
 
-```{r results='asis'}
+```{r}
+samples <- colnames(counts)
+if (length(samples) > 500){
+    groups <- cut(seq(length(samples)), ceiling(length(samples)/500))
+} else {
+    groups <- rep(1, length(samples))
+}
+subgroups <- split(samples, groups)
+names(subgroups) <- seq(length(subgroups))
+```
+
+# Alignment summary
+```{r}
 specialFeatures <- rownames(counts)[ grepl( "^__", rownames(counts) ) ]
 summary <- expand.grid(feature=c("aligned", specialFeatures), sample=colnames(counts))
 summary$count <- apply(summary, 1, function(x, raw){
@@ -80,30 +98,50 @@ summary$count <- apply(summary, 1, function(x, raw){
     }
   }, counts)
 
-p <- ggplot(summary, aes(x=sample, y=count, fill=feature))
-p <- p + theme(axis.text.x = element_text( angle = 90, hjust = 0.5, vjust = 0.5))
-p2 <- p + geom_col(color= "gray", position=position_stack(reverse = T), width=1)
-p2 <- p2 + ggtitle("Alignment summary")
-if (ncol(counts) > 16){
-    subchunkify(p2, 5, ncol(counts)/4+1)
-} else {
-    subchunkify(p2, 5, 5)
+asTable <- acast(summary, feature~sample, value.var="count")
+
+write.table(as.matrix(asTable), params$sumTable, sep="\t", col.names = NA)
+write.table(prop.table(as.matrix(asTable), margin = 2) * 100, 
+            params$sumTablePerc, sep="\t", col.names = NA)
+```
+
+## Absolute
+
+```{r results='asis'}
+for (group in names(subgroups)){
+    summary2 <- summary[summary$sample %in% subgroups[[group]],]
+    p <- ggplot(summary2, aes(x=sample, y=count, fill=feature))
+    p <- p + theme(axis.text.x = element_text( angle = 90, hjust = 0.5, vjust = 0.5))
+    p2 <- p + geom_col(color= "gray", position=position_stack(reverse = T), width=1)
+    p2 <- p2 + ggtitle(gettextf("Alignment summary (subgroup %s)", group))
+    if (length(subgroups[[group]]) > 16){
+        subchunkify(p2, 5, length(subgroups[[group]])/4+1)
+    } else {
+        subchunkify(p2, 5, 5)
+    }
 }
 ```
 
+## Relative
+
 ```{r results='asis'}
-p3 <- p + geom_col(color= "gray", position=position_fill(reverse = T), width=1)
-p3 <- p3 + scale_y_continuous(labels = scales::percent)
-p3 <- p3 + ggtitle("Relative alignment summary")
-if (ncol(counts) > 16){
-    subchunkify(p3, 5, ncol(counts)/4+1)
-} else {
-    subchunkify(p3, 5, 5)
+for (group in names(subgroups)){
+    summary2 <- summary[summary$sample %in% subgroups[[group]],]
+    p <- ggplot(summary2, aes(x=sample, y=count, fill=feature))
+    p <- p + theme(axis.text.x = element_text( angle = 90, hjust = 0.5, vjust = 0.5))
+    p3 <- p + geom_col(color= "gray", position=position_fill(reverse = T), width=1)
+    p3 <- p3 + scale_y_continuous(labels = scales::percent)
+    p3 <- p3 + ggtitle(gettextf("Relative alignment summary (subgroup %s)", group))
+    if (length(subgroups[[group]]) > 16){
+        subchunkify(p3, 5, length(subgroups[[group]])/4+1)
+    } else {
+        subchunkify(p3, 5, 5)
+    }
 }
 ```
 
 # Complexity
-```{r results='asis'}
+```{r}
 features <- rownames(counts)[ ! grepl( "^__", rownames(counts) ) ]
 ranks <- c(1:1000)
 rankFraction <- expand.grid(rank=ranks, sample=colnames(counts))
@@ -120,30 +158,45 @@ dText <- rankFraction %>%
     group_by_(.dots="sample") %>%
     sample_n(2) %>%
     ungroup()
-
-
-p <- ggplot(rankFraction, aes(x=rank, y=value, color=sample, label=sample))
-p <- p + geom_line(alpha=0.2)
-p <- p + geom_point(alpha=0.1)
-p <- p + scale_x_log10(limits = c(1, 1000), breaks = c(1, 10, 100, 1000, 10000, 100000))
-p <- p + geom_text(data = dText, size = 3);
-p <- p + ylab("Cumulative reads till Rank")
-p <- p + theme_bw()
-p <- p + annotation_logticks(sides = "tb")
-p <- p + guides(color=F)
-p
 ```
 
-```{r result='asis'}
-p <- ggplot(rankFraction, aes(x=rank, y=fraction, color=sample, label=sample))
-p <- p + geom_line(alpha=0.2)
-p <- p + geom_point(alpha=0.1)
-p <- p + scale_x_log10(limits = c(1, 1000), breaks = c(1, 10, 100, 1000, 10000, 100000))
-p <- p + scale_y_continuous(labels = scales::percent)
-p <- p + geom_text(data = dText, size = 3);
-p <- p + ylab("Cumulative fraction of total reads till Rank")
-p <- p + theme_bw()
-p <- p + annotation_logticks(sides = "tb")
-p <- p + guides(color=F)
-p
+## Absolute
+
+```{r results='asis'}
+for (group in names(subgroups)){
+    rankFraction2 <- rankFraction[rankFraction$sample %in% subgroups[[group]], ]
+    dText2 <- dText[dText$sample %in% subgroups[[group]],]
+    p <- ggplot(rankFraction2, aes(x=rank, y=value, color=sample, label=sample))
+    p <- p + geom_line(alpha=0.2)
+    p <- p + geom_point(alpha=0.1)
+    p <- p + scale_x_log10(limits = c(1, 1000), breaks = c(1, 10, 100, 1000, 10000, 100000))
+    p <- p + geom_text(data = dText2, size = 3);
+    p <- p + ylab("Cumulative reads till Rank")
+    p <- p + theme_bw()
+    p <- p + annotation_logticks(sides = "tb")
+    p <- p + guides(color=F)
+    p <- p + ggtitle(gettextf("subgroup %s", group))
+    subchunkify(p, 5, 8)
+}
+```
+
+## Relative
+
+```{r results='asis'}
+for (group in names(subgroups)){
+    rankFraction2 <- rankFraction[rankFraction$sample %in% subgroups[[group]], ]
+    dText2 <- dText[dText$sample %in% subgroups[[group]],]
+    p <- ggplot(rankFraction2, aes(x=rank, y=fraction, color=sample, label=sample))
+    p <- p + geom_line(alpha=0.2)
+    p <- p + geom_point(alpha=0.1)
+    p <- p + scale_x_log10(limits = c(1, 1000), breaks = c(1, 10, 100, 1000, 10000, 100000))
+    p <- p + scale_y_continuous(labels = scales::percent)
+    p <- p + geom_text(data = dText2, size = 3);
+    p <- p + ylab("Cumulative fraction of total reads till Rank")
+    p <- p + theme_bw()
+    p <- p + annotation_logticks(sides = "tb")
+    p <- p + guides(color=F)
+    p <- p + ggtitle(gettextf("subgroup %s", group))
+    subchunkify(p, 5, 8)
+}
 ```
