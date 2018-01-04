@@ -1,14 +1,42 @@
 from os.path import basename
 from sys import stderr
+from pkg_resources import resource_string
+import json
+
 
 import pandas as pd
+from cerberus import Validator
 from snakemake.io import expand
 
 
-#TODO check config
+def printValidationErrors(dic, depth=0):
+    """
+    This function prints the errors given by cerberus when validating
+    a dictionary.
+    """
+    for x in dic:
+        er = dic[x][0]
+        if type(er) == dict:
+            print("{}Errors for key {}:".format("\t"*depth, x))
+            printValidationErrors(er, depth+1)
+        else:
+            print("{}Error for key {}: {}".format("\t"*depth, x, er))
+
+
+#TODO save normalized config?
 def checkConfig(config):
-    pass
-    #print("Config checking is not included yet.", file=stderr)
+    """
+    This function uses cerberus to check the given config dictionary
+    with the schema. It then fills in the defaults for missing values
+    and returns the completed config.
+    """
+    schema = json.loads(resource_string(__name__, "config_schema.json"))
+    v = Validator(schema)
+    passed = v.validate(config)
+    if passed:
+        return v.normalized(config)
+    printValidationErrors(v.errors)
+    exit(1)
 
 
 def getMD5FromSampleSheet(wildcards, sampleSheet):
@@ -44,7 +72,7 @@ def lookForInputFile(wildcards, sampleSheet):
         if wildcards.file == basename(x):
             return x
 
-#TODO (DONE?) change this to retrieve specific lane >>> samplesheet.loc["B", "L2"]["R1"]
+
 def getFastq(wildcards, sampleSheet):
     """
     This function retrieves the file path(s) for a specific sample/lane
@@ -118,9 +146,6 @@ def getBasenames(files):
     return out
 
 
-#TODO bam and bai files (check if it still works when another mapper is added)
-#TODO fragements_per_gene per mapper per sample 9check if it still works when another mapper is added)
-#TODO merged fragements_per_gene per mapper
 def determineOutput(config, sampleSheet):
     """
     This function determines what output files need to be

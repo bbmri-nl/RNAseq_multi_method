@@ -1,0 +1,186 @@
+{
+  "workdir": {
+    "type": "string",
+    "required": true
+  },
+  "sampleSheet": {
+    "type": "string",
+    "required": true
+  },
+  "cutadapt": {
+    "type": "dict",
+    "default": {
+      "threads": 4,
+      "minimum_readlength": 40,
+      "quality_threshold": 20,
+      "adapterFile": [
+        "/usr/local/FastQC/FastQC-0.11.2/Configuration/contaminant_list.txt",
+        "/usr/local/FastQC/FastQC-0.11.2/Configuration/adapter_list.txt"
+      ],
+      "params": ""
+    },
+    "schema": {
+      "threads": {
+        "type": "integer",
+        "default": 4
+      },
+      "minimum_readlength": {
+        "type": "integer",
+        "default": 40
+      },
+      "quality_threshold": {
+        "type": "integer",
+        "default": 20
+      },
+      "adapterFile": {
+        "type": ["list", "string"],
+        "default": [
+          "/usr/local/FastQC/FastQC-0.11.2/Configuration/contaminant_list.txt",
+          "/usr/local/FastQC/FastQC-0.11.2/Configuration/adapter_list.txt"
+        ],
+        "schema": {
+          "type": "string",
+          "minlength": 1
+        }
+      },
+      "params": {
+        "type": "string",
+        "default": ""
+      }
+    }
+  },
+  "mappers": {
+    "type": "dict",
+    "required": true,
+    "minlength": 1,
+    "schema": {
+      "star": {
+        "type": "dict",
+        "default": {
+          "include": false,
+          "index": "",
+          "params": "",
+          "threads": 8
+        },
+        "schema": {
+          "include": {
+            "type": "boolean",
+            "default": true
+          },
+          "index": {
+            "type": "string",
+            "required": true
+          },
+          "params": {
+            "type": "string",
+            "default": ""
+          },
+          "threads": {
+            "type": "integer",
+            "default": 8
+          }
+        }
+      },
+      "star2pass": {
+        "type": "dict",
+        "default": {
+          "include": false,
+          "index": "",
+          "params": "",
+          "threads": 8
+        },
+        "schema": {
+          "include": {
+            "type": "boolean",
+            "default": true
+          },
+          "index": {
+            "type": "string",
+            "required": true
+          },
+          "params": {
+            "type": "string",
+            "default": ""
+          },
+          "threads": {
+            "type": "integer",
+            "default": 8
+          }
+        }
+      }
+    }
+  },
+  "counting": {
+    "type": "dict",
+    "required": true,
+    "minlength": 1,
+    "schema": {
+      "fragments_per_gene": {
+        "type": "dict",
+        "default": {
+          "include": false,
+          "annotation_gff": "",
+          "params": "",
+          "stranded": "no",
+          "id_field": "gene_id"
+        },
+        "schema": {
+          "include": {
+            "type": "boolean",
+            "default": true
+          },
+          "annotation_gff": {
+            "type": "string",
+            "required": true
+          },
+          "params": {
+            "type": "string",
+            "default": ""
+          },
+          "stranded": {
+            "type": "string",
+            "default": "no",
+            "regex": "(no|yes|reverse)"
+          },
+          "id_field": {
+            "type": "string",
+            "default": "gene_id"
+          }
+        }
+      },
+      "fragments_per_exon": {
+        "type": "dict",
+        "default": {
+          "include": false,
+          "annotation_gff": "",
+          "params": "",
+          "stranded": "no",
+          "id_field": "exon_id"
+        },
+        "schema": {
+          "include": {
+            "type": "boolean",
+            "default": true
+          },
+          "annotation_gff": {
+            "type": "string",
+            "required": true
+          },
+          "params": {
+            "type": "string",
+            "default": ""
+          },
+          "stranded": {
+            "type": "string",
+            "default": "no",
+            "regex": "(no|yes|reverse)"
+          },
+          "id_field": {
+            "type": "string",
+            "default": "exon_id"
+          }
+        }
+      }
+    }
+  }
+}

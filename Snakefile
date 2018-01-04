@@ -1,10 +1,12 @@
+#TODO increase memory on retry
+
 import pandas as pd
 
-import ownUtils as ou
+import resources.ownUtils as ou
 
 
-ou.checkConfig(config)
-source=srcdir("")
+config = ou.checkConfig(config)
+source = srcdir("")
 
 workdir: config["workdir"]
 sampleSheet = pd.read_table(config["sampleSheet"], index_col=[0,1])
