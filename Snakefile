@@ -1,3 +1,10 @@
+#TODO add variant calling
+#TODO add more mappers and counting methods
+    #TODO add HISAT2
+    #TODO add basecounter
+    #TODO add featurecounts
+    #TODO add star quant mode
+
 import pandas as pd
 
 import resources.ownUtils as ou
@@ -8,6 +15,7 @@ source = srcdir("")
 
 workdir: config["workdir"]
 sampleSheet = pd.read_table(config["sampleSheet"], index_col=[0,1])
+ou.checkSampleSheet(sampleSheet)
 
 
 onstart:
@@ -19,7 +27,7 @@ onerror:
     print("- faulty config file (see above error message)")
     print("- faulty sample sheet")
     print("- missing inputs")
-    print("- Mismatching MD5sums for inputs")
+    print("- mismatching MD5sums for inputs (see below)")
     print("MD5sum checks for inputs:")
     shell("cat .md5_check/*.log")
     print("\n")
@@ -39,6 +47,7 @@ include: "rules/bam_index.smk"
 include: "rules/htseq-count.smk"
 include: "rules/merge_counts.smk"
 include: "rules/count_metrics.smk"
+include: "rules/bamstats.smk"
 
 
 """
@@ -58,8 +67,9 @@ cleaned/
         {fastqc output}
     {sample}_cleaned.fastq
 {mapper}/
-    metrics/samples
-        -TBD-
+    metrics/{sample}
+        bamstats.json
+        bamstat.summary.json
     {sample}/
         {sample}_{mapper}.bam
         {sample}_{mapper}.bam.bai

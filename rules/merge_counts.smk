@@ -1,9 +1,9 @@
 rule merge_counts:
     input:
-        lambda w: ou.getFilePerSample(sampleSheet.index.levels[0].tolist(),
-            sampleSheet,
+        lambda w: expand(
             "expression_measures_{mapper}/{type}/{sample}/{sample}.{type}",
-            mapper=w.mapper, type=w.type)
+            mapper=w.mapper, type=w.type,
+            sample=sampleSheet.index.levels[0].tolist())
     output:
         "expression_measures_{mapper}/{type}/all_samples.{type}"
     conda: "../envs/R.yml"

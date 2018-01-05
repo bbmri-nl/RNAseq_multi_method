@@ -47,6 +47,42 @@ def checkConfig(config):
     exit(1)
 
 
+def checkR2(sampleSheet):
+    """
+    This function checks whether or not the MD5sum for R2 is missing
+    if R2 is given in the samplesheet.
+    """
+    for index, row in sampleSheet.iterrows():
+        if type(row["R2"]) == str:
+            if type(row["R2_MD5"]) == float:
+                return True
+    return False
+
+
+def checkSampleSheet(sampleSheet):
+    """
+    This function checks whether the samplesheet is formatted
+    correctly or not, and whether mandatory values are given
+    or not.
+    """
+    nrows = sampleSheet.shape[0]
+    if not (sampleSheet.index.names == ["Sample", "Lane"] and
+        list(sampleSheet) == ["R1", "R1_MD5", "R2", "R2_MD5"]):
+        print("Error in samplesheet: headers are incorrect")
+    elif not sum([-1 in x for x in sampleSheet.index.labels]) == 0:
+        print("Error in samplesheet: missing missing value(s) in "
+            "Sample and/or Lane column(s)")
+    elif sampleSheet[["R1", "R1_MD5"]].isnull().any().any():
+        print("Error in samplesheet: missing value(s) in "
+            "R1 and/or R1_MD5 column(s)")
+    elif checkR2(sampleSheet): #returns false if okay
+        print("Error in samplesheet: R2_MD5 missing for given "
+            "R2")
+    else:
+        return
+    exit(1)
+
+
 def getMD5FromSampleSheet(wildcards, sampleSheet):
     """
     This function retrieves the MD5 for a file from the samplesheet.
@@ -124,7 +160,7 @@ def isSingleEnd(sample, sampleSheet):
         return out
 
 
-def getFilePerSample(samples, sampleSheet, form1, form2=None, **kwargs):
+def getFilePerSample(samples, sampleSheet, form1, form2, **kwargs):
     """
     This function generates a list of filenames. For each sample
     a filename will be generated according to form1. If a sample
@@ -133,7 +169,7 @@ def getFilePerSample(samples, sampleSheet, form1, form2=None, **kwargs):
     """
     out = []
     for x in samples:
-        if form2==None or isSingleEnd(x, sampleSheet):
+        if isSingleEnd(x, sampleSheet):
             out += expand(form1, sample=x, **kwargs)
         else:
             out += expand(form2, sample=x, group=[1,2], **kwargs)
@@ -193,18 +229,18 @@ def determineOutput(config, sampleSheet):
 
     # bam and bai files
     for mapper in mappers:
-        out += getFilePerSample(samples, sampleSheet,
-            "{mapper}/{sample}/{sample}_{mapper}.bam",
-            mapper=mapper)
-        out += getFilePerSample(samples, sampleSheet,
-            "{mapper}/{sample}/{sample}_{mapper}.bam.bai",
-            mapper=mapper)
+        out += expand("{mapper}/{sample}/{sample}_{mapper}.{ext}",
+            mapper=mapper, sample=samples, ext=["bam", "bam.bai"])
+
+        #bamstats
+        out += expand("{mapper}/metrics/{sample}/{file}",
+            mapper=mapper, sample=samples,
+            file=["bamstats.json", "bamstats.summary.json"])
 
         # count tables
         for countType in countTypes:
-            out += getFilePerSample(samples, sampleSheet,
-            "expression_measures_{mapper}/{countType}/"
-            "{sample}/{sample}.{countType}", mapper=mapper,
+            out += expand("expression_measures_{mapper}/{countType}/"
+            "{sample}/{sample}.{countType}", sample=samples, mapper=mapper,
             countType=countType)
             out.append(
                 "expression_measures_{mapper}/{countType}/"
