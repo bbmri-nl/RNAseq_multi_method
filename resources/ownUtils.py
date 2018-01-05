@@ -1,4 +1,5 @@
-from os.path import basename
+from os.path import basename, exists
+from os import makedirs
 from sys import stderr
 from pkg_resources import resource_string
 import json
@@ -17,24 +18,31 @@ def printValidationErrors(dic, depth=0):
     for x in dic:
         er = dic[x][0]
         if type(er) == dict:
-            print("{}Errors for key {}:".format("\t"*depth, x))
+            print("{}Errors for key {}:".format("\t"*depth, x), file=stderr)
             printValidationErrors(er, depth+1)
         else:
-            print("{}Error for key {}: {}".format("\t"*depth, x, er))
+            print("{}Error for key {}: {}".format("\t"*depth, x, er),
+                file=stderr)
 
 
-#TODO save normalized config?
 def checkConfig(config):
     """
     This function uses cerberus to check the given config dictionary
     with the schema. It then fills in the defaults for missing values
-    and returns the completed config.
+    and returns the completed config after saving it as a json file.
     """
     schema = json.loads(resource_string(__name__, "config_schema.json"))
     v = Validator(schema)
     passed = v.validate(config)
     if passed:
-        return v.normalized(config)
+        normalized = v.normalized(config)
+        if not exists(".logs"):
+            makedirs(".logs")
+        outFile = open(".logs/normalized_config.json", "w")
+        outFile.write(json.dumps(normalized, sort_keys=True,
+             indent=4, separators=(',', ': ')) + "\n")
+        outFile.close()
+        return normalized
     printValidationErrors(v.errors)
     exit(1)
 
@@ -219,8 +227,4 @@ def determineOutput(config, sampleSheet):
 
     # raw md5 check
     out += expand(".md5_check/{file}.OK", file=getBasenames(inputs))
-
-    #print(out)
-    #return ["raw_metrics/a.chr21.1.fq.gz_fastqc.html",
-    #    "raw_metrics/a.chr21.1.fq.gz_fastqc.html.md5"] #for testing
     return out

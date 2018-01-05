@@ -9,6 +9,9 @@ rule count_metrics:
     params:
         source=source,
         wd=config["workdir"]
+    resources:
+        mem=lambda wildcards, attempt: attempt * 10
+    log: ".logs/count_metrics/{mapper}_{type}.log"
     shell:
         "Rscript -e \"rmarkdown::render('{params.source}scripts/count_metrics.rmd', "
         "output_dir='expression_measures_{wildcards.mapper}/{wildcards.type}/metrics', "
@@ -17,4 +20,4 @@ rule count_metrics:
         "output_file='{output.report}', "
         "params=list(input = '{input}', sumTable='{output.sumTable}', "
         "sumTablePerc='{output.sumTablePerc}', type='{wildcards.type}')"
-        ")\""
+        ")\" > {log}"

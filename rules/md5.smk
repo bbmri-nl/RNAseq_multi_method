@@ -3,6 +3,8 @@ rule md5:
         "{file}"
     output:
         "{file}.md5"
+    resources:
+        mem=lambda wildcards, attempt: attempt * 3
     shell:
         "md5sum $(pwd)/{input} > {output}"
 
@@ -14,6 +16,8 @@ rule md5_check_raw:
         touch(".md5_check/{file}.OK")
     params:
         md5=lambda w: ou.getMD5FromSampleSheet(w, sampleSheet)
+    resources:
+        mem=lambda wildcards, attempt: attempt * 3
     log:
         ".md5_check/{file}.log"
     shell:

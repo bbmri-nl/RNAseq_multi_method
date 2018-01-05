@@ -1,5 +1,3 @@
-#TODO increase memory on retry
-
 import pandas as pd
 
 import resources.ownUtils as ou
@@ -18,7 +16,7 @@ onstart:
 onerror:
     print("\n\nPIPELINE FAILED\n")
     print("Potential reasons for failure:")
-    print("- faulty config file")
+    print("- faulty config file (see above error message)")
     print("- faulty sample sheet")
     print("- missing inputs")
     print("- Mismatching MD5sums for inputs")
@@ -78,15 +76,14 @@ expression_measures_{mapper}/
     {sample}.{variantcaller}.vcf.md5
 """
 
-#TODO: change order of steps: merge after QC
 """
 QC (fastqc)
 cutadapt
 QC (fastqc)
 merge fastq
 mappers
-QC
 htseq count per mapper
 other counts methods per mapper ? (featurecounts)
+count metrics
 variantcallers per mapper ?
 """

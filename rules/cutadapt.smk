@@ -10,10 +10,12 @@ rule cutadapt_pe:
         qual=config["cutadapt"]["quality_threshold"],
         minlen=config["cutadapt"]["minimum_readlength"],
         extra=config["cutadapt"]["params"]
+    resources:
+        mem=lambda wildcards, attempt: attempt * 3
     threads: config["cutadapt"]["threads"]
     conda: "../envs/cutadapt.yml"
     log:
-        "logs/cutadapt_pe/{sample}_{lane}.log"
+        ".logs/cutadapt_pe/{sample}_{lane}.log"
     shell:
         "cutadapt {params.extra} "
         "-q {params.qual},{params.qual} "
@@ -37,10 +39,12 @@ rule cutadapt_se:
         qual=config["cutadapt"]["quality_threshold"],
         minlen=config["cutadapt"]["minimum_readlength"],
         extra=config["cutadapt"]["params"]
+    resources:
+        mem=lambda wildcards, attempt: attempt * 3
     threads: config["cutadapt"]["threads"]
     conda: "../envs/cutadapt.yml"
     log:
-        "logs/cutadapt_se/{sample}_{lane}.log"
+        ".logs/cutadapt_se/{sample}_{lane}.log"
     shell:
         "cutadapt {params.extra} "
         "-q {params.qual},{params.qual} "

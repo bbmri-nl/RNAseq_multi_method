@@ -10,8 +10,10 @@ rule star:
     params:
         index=config["mappers"]["star"]["index"],
         extra=config["mappers"]["star"]["params"]
+    resources:
+        mem=lambda wildcards, attempt: attempt * 10
     log:
-        "logs/star/{sample}.log"
+        ".logs/star/{sample}.log"
     threads: config["mappers"]["star"]["threads"]
     conda: "../envs/star.yml"
     shell:
@@ -42,8 +44,10 @@ rule star2pass:
     params:
         index=config["mappers"]["star2pass"]["index"],
         extra=config["mappers"]["star2pass"]["params"]
+    resources:
+        mem=lambda wildcards, attempt: attempt * 10
     log:
-        "logs/star2pass/{sample}.log"
+        ".logs/star2pass/{sample}.log"
     threads: config["mappers"]["star2pass"]["threads"]
     conda: "../envs/star.yml"
     shell:

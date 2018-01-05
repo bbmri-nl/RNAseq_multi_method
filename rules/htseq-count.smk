@@ -8,8 +8,10 @@ rule htseq_fpg:
         stranded=config["counting"]["fragments_per_gene"]["stranded"],
         idField=config["counting"]["fragments_per_gene"]["id_field"],
         extra=config["counting"]["fragments_per_gene"]["params"]
+    resources:
+        mem=lambda wildcards, attempt: attempt * 3
     log:
-        "logs/htseq_fpg/{mapper}/{sample}.log"
+        ".logs/htseq_fpg/{mapper}/{sample}.log"
     conda: "../envs/htseq.yml"
     shell:
         "htseq-count -f bam -r pos -i {params.idField} "
@@ -28,8 +30,10 @@ rule htseq_fpe:
         stranded=config["counting"]["fragments_per_exon"]["stranded"],
         idField=config["counting"]["fragments_per_exon"]["id_field"],
         extra=config["counting"]["fragments_per_exon"]["params"]
+    resources:
+        mem=lambda wildcards, attempt: attempt * 3
     log:
-        "logs/htseq_fpe/{mapper}/{sample}.log"
+        ".logs/htseq_fpe/{mapper}/{sample}.log"
     conda: "../envs/htseq.yml"
     shell:
         "htseq-count -f bam -r pos -i {params.idField} "

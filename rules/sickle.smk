@@ -1,3 +1,5 @@
+# These rules are not used
+
 rule sickle_pe:
     input:
         r1="merged/{sample}_merged_1.fastq.gz",
@@ -9,8 +11,10 @@ rule sickle_pe:
     params:
         qual_type=config["sickle"]["qual_type"],
         extra=config["sickle"]["params"]
+    resources:
+        mem=lambda wildcards, attempt: attempt * 3
     log:
-        "logs/sickle_pe/{sample}.log"
+        ".logs/sickle_pe/{sample}.log"
     wrapper:
         "0.17.4/bio/sickle/pe"
 
@@ -22,7 +26,9 @@ rule sickle_se:
     params:
         qual_type=config["sickle"]["qual_type"],
         extra=config["sickle"]["params"]
+    resources:
+        mem=lambda wildcards, attempt: attempt * 3
     log:
-        "logs/sickle_se/{sample}.log"
+        ".logs/sickle_se/{sample}.log"
     wrapper:
         "0.17.4/bio/sickle/se"
