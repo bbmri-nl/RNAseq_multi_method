@@ -107,6 +107,33 @@
             "default": 8
           }
         }
+      },
+      "hisat2": {
+        "type": "dict",
+        "default": {
+          "include": false,
+          "index": "",
+          "params": "",
+          "threads": 8
+        },
+        "schema": {
+          "include": {
+            "type": "boolean",
+            "default": true
+          },
+          "index": {
+            "type": "string",
+            "required": true
+          },
+          "params": {
+            "type": "string",
+            "default": ""
+          },
+          "threads": {
+            "type": "integer",
+            "default": 8
+          }
+        }
       }
     }
   },

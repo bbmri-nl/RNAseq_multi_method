@@ -11,6 +11,7 @@
 ## Included Mappers
 - STAR
 - STAR (2 pass mode)
+- HISAT2
 
 ## Included Counting methods
 - HTSeq-count

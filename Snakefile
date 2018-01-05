@@ -1,6 +1,6 @@
 #TODO add variant calling
 #TODO add more mappers and counting methods
-    #TODO add HISAT2
+    #TODO test hisat2
     #TODO add basecounter
     #TODO add featurecounts
     #TODO add star quant mode
@@ -48,6 +48,7 @@ include: "rules/htseq-count.smk"
 include: "rules/merge_counts.smk"
 include: "rules/count_metrics.smk"
 include: "rules/bamstats.smk"
+include: "rules/hisat2.smk"
 
 
 """
