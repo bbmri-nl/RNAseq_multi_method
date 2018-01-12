@@ -1,11 +1,11 @@
 rule merge_counts:
     input:
         lambda w: expand(
-            "expression_measures_{mapper}/{type}/{sample}/{sample}.{type}",
+            "expression_measures_{mapper}/{type}/{sample}/{sample}.tsv",
             mapper=w.mapper, type=w.type,
             sample=sampleSheet.index.levels[0].tolist())
     output:
-        "expression_measures_{mapper}/{type}/all_samples.{type}"
+        "expression_measures_{mapper}/{type}/all_samples.tsv"
     conda: "../envs/R.yml"
     params:
         idVars="feature",

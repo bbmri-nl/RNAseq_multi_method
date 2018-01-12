@@ -3,7 +3,10 @@
     #TODO test hisat2
     #TODO add basecounter
     #TODO add featurecounts
-    #TODO add star quant mode
+        #TODO test count_metrics
+    #TODO add star quant mode (low priority)
+#TODO make conda envs configurable (low priority)
+#TODO add benchmarking to rules (low priority)
 
 import pandas as pd
 
@@ -30,7 +33,7 @@ onerror:
     print("- mismatching MD5sums for inputs (see below)")
     print("MD5sum checks for inputs:")
     shell("cat .md5_check/*.log")
-    print("\n")
+    print("\n\nPIPELINE FAILED\n")
 
 
 rule all:
@@ -49,6 +52,7 @@ include: "rules/merge_counts.smk"
 include: "rules/count_metrics.smk"
 include: "rules/bamstats.smk"
 include: "rules/hisat2.smk"
+include: "rules/featurecounts.smk"
 
 
 """

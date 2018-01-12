@@ -142,7 +142,7 @@
     "required": true,
     "minlength": 1,
     "schema": {
-      "fragments_per_gene": {
+      "htseq-count": {
         "type": "dict",
         "default": {
           "include": false,
@@ -175,14 +175,15 @@
           }
         }
       },
-      "fragments_per_exon": {
+      "featurecounts": {
         "type": "dict",
         "default": {
           "include": false,
           "annotation_gff": "",
           "params": "",
-          "stranded": "no",
-          "id_field": "exon_id"
+          "feature_type": "",
+          "feature_group": "",
+          "stranded": ""
         },
         "schema": {
           "include": {
@@ -197,14 +198,18 @@
             "type": "string",
             "default": ""
           },
+          "feature_type": {
+            "type": "string",
+            "default": "exon"
+          },
+          "feature_group": {
+            "type": "string",
+            "default": "gene_id"
+          },
           "stranded": {
             "type": "string",
             "default": "no",
             "regex": "(no|yes|reverse)"
-          },
-          "id_field": {
-            "type": "string",
-            "default": "exon_id"
           }
         }
       }

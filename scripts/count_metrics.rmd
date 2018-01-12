@@ -66,6 +66,8 @@ subchunkify <- function(g, fig_height=7, fig_width=5) { #http://michaeljw.com/bl
 path <- params$input
 counts <- read.csv(path, header = T, sep="\t", row.names = "feature")
 
+specialMarkers <- list("htseq-count"="^__", "featurecounts"="^Unassigned_")
+
 # for testing
 #for (x in 3:800){
 #    counts[x] <- counts$A * (x/100+1)
@@ -87,7 +89,8 @@ names(subgroups) <- seq(length(subgroups))
 
 # Alignment summary
 ```{r}
-specialFeatures <- rownames(counts)[ grepl( "^__", rownames(counts) ) ]
+specialMarker <- as.character(unlist(specialMarkers[params$type]))
+specialFeatures <- rownames(counts)[ grepl(specialMarker, rownames(counts))]
 summary <- expand.grid(feature=c("aligned", specialFeatures), sample=colnames(counts))
 summary$count <- apply(summary, 1, function(x, raw){
     if (x["feature"] %in% rownames(raw)) {
@@ -101,7 +104,7 @@ summary$count <- apply(summary, 1, function(x, raw){
 asTable <- acast(summary, feature~sample, value.var="count")
 
 write.table(as.matrix(asTable), params$sumTable, sep="\t", col.names = NA)
-write.table(prop.table(as.matrix(asTable), margin = 2) * 100, 
+write.table(prop.table(as.matrix(asTable), margin = 2) * 100,
             params$sumTablePerc, sep="\t", col.names = NA)
 ```
 
@@ -142,7 +145,7 @@ for (group in names(subgroups)){
 
 # Complexity
 ```{r}
-features <- rownames(counts)[ ! grepl( "^__", rownames(counts) ) ]
+features <- rownames(counts)[ ! grepl(specialMarker, rownames(counts))]
 ranks <- c(1:1000)
 rankFraction <- expand.grid(rank=ranks, sample=colnames(counts))
 for (x in colnames(counts)){

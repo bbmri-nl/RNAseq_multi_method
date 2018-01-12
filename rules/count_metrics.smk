@@ -1,6 +1,6 @@
 rule count_metrics:
     input:
-        "expression_measures_{mapper}/{type}/all_samples.{type}"
+        "expression_measures_{mapper}/{type}/all_samples.tsv"
     output:
         sumTable="expression_measures_{mapper}/{type}/metrics/alignmentSummary.tsv",
         sumTablePerc="expression_measures_{mapper}/{type}/metrics/alignmentSummaryPercentages.tsv",

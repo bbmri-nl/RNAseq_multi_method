@@ -25,15 +25,16 @@ rule hisat2:
         threads=config["mappers"]["hisat2"]["threads"],
         inputArgs=getHisatInputArg
     resources:
-        mem=lambda wildcards, attempt: attempt * 5
-    log: ".log/hisat2/{sample}.log"
+        mem=lambda wildcards, attempt: attempt * 10
+    log: ".logs/hisat2/{sample}.log"
     threads: config["mappers"]["hisat2"]["threads"] * 2
     conda: "../envs/hisat2.yml"
     shell:
         "hisat2 {params.extra} "
         "-p {params.threads} "
         "-x {params.index} "
-        "{params.inputArgs} | "
-        "samtools sort -@ {params.threads} "
-        "-o {output} "
-        "-T hisat2/{wildcards.sample}/tmp 2> {log}"
+        "{params.inputArgs} > {output}"
+        #"| "
+        #"samtools sort -@ {params.threads} "
+        #"-o {output} "
+        #"-T hisat2/{wildcards.sample}/tmp"

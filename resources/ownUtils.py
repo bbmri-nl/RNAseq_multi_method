@@ -4,7 +4,6 @@ from sys import stderr
 from pkg_resources import resource_string
 import json
 
-
 import pandas as pd
 from cerberus import Validator
 from snakemake.io import expand
@@ -17,7 +16,7 @@ def printValidationErrors(dic, depth=0):
     """
     for x in dic:
         er = dic[x][0]
-        if type(er) == dict:
+        if isinstance(er, dict):
             print("{}Errors for key {}:".format("\t"*depth, x), file=stderr)
             printValidationErrors(er, depth+1)
         else:
@@ -52,9 +51,9 @@ def checkR2(sampleSheet):
     This function checks whether or not the MD5sum for R2 is missing
     if R2 is given in the samplesheet.
     """
-    for index, row in sampleSheet.iterrows():
-        if type(row["R2"]) == str:
-            if type(row["R2_MD5"]) == float:
+    for _, row in sampleSheet.iterrows():
+        if isinstance(row["R2"], str):
+            if isinstance(row["R2_MD5"], float):
                 return True
     return False
 
@@ -65,7 +64,6 @@ def checkSampleSheet(sampleSheet):
     correctly or not, and whether mandatory values are given
     or not.
     """
-    nrows = sampleSheet.shape[0]
     if not (sampleSheet.index.names == ["Sample", "Lane"] and
         list(sampleSheet) == ["R1", "R1_MD5", "R2", "R2_MD5"]):
         print("Error in samplesheet: headers are incorrect")
@@ -134,7 +132,7 @@ def adaptersAsParams(config):
     mentioned in the config file into arguments which can be given to
     cutadapt.
     """
-    if type(config["cutadapt"]["adapterFile"]) == str:
+    if isinstance(config["cutadapt"]["adapterFile"], str):
         files = [config["cutadapt"]["adapterFile"]]
     else:
         files = config["cutadapt"]["adapterFile"]
@@ -240,11 +238,11 @@ def determineOutput(config, sampleSheet):
         # count tables
         for countType in countTypes:
             out += expand("expression_measures_{mapper}/{countType}/"
-            "{sample}/{sample}.{countType}", sample=samples, mapper=mapper,
+            "{sample}/{sample}.tsv", sample=samples, mapper=mapper,
             countType=countType)
             out.append(
                 "expression_measures_{mapper}/{countType}/"
-                "all_samples.{countType}".format(mapper=mapper,
+                "all_samples.tsv".format(mapper=mapper,
                 countType=countType))
 
             # count metrics

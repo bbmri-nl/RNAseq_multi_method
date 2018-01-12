@@ -3,5 +3,4 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - hisat2 = 2.1
-  - samtools = 1.5
+  - subread = 1.6
