@@ -1,11 +1,11 @@
-#TODO add variant calling
+#TODO add vcfstats
+#TODO adjust bamstats rule so it doesn't need to load the
+    # biopet module (lwo priority; wait for jar release)
 #TODO add more mappers and counting methods
-    #TODO test hisat2
+    #TODO test hisat2 (low priority)
     #TODO add basecounter
-    #TODO add featurecounts
-        #TODO test count_metrics
-    #TODO add star quant mode (low priority)
 #TODO make conda envs configurable (low priority)
+    #TODO add version logging
 #TODO add benchmarking to rules (low priority)
 
 import pandas as pd
@@ -22,6 +22,10 @@ ou.checkSampleSheet(sampleSheet)
 
 
 onstart:
+    shell("echo Output directory: $(pwd)")
+
+onsuccess:
+    print("\n\nPIPELINE COMPLETED SUCCESSFULLY\n")
     shell("echo Output directory: $(pwd)")
 
 onerror:
@@ -53,15 +57,11 @@ include: "rules/count_metrics.smk"
 include: "rules/bamstats.smk"
 include: "rules/hisat2.smk"
 include: "rules/featurecounts.smk"
+include: "rules/varscan.smk"
+include: "rules/vcf_index.smk"
 
 
 """
-Results should include:
-- bam per sample per mapper
-- counts per sample per mapper
-- vcf per sample per mapper?
-- merged fastq per sample
-
 output structure:
 raw_metrics/
     {fastqc output}
@@ -85,20 +85,10 @@ expression_measures_{mapper}/
         {sample}/
             {sample}.fragements_per_gene
         all_samples.fragements_per_gene
-{variantcaller}_{mapper}/
-    metrics/ ?
-    {sample}.{variantcaller}.vcf
-    {sample}.{variantcaller}.vcf.md5
-"""
-
-"""
-QC (fastqc)
-cutadapt
-QC (fastqc)
-merge fastq
-mappers
-htseq count per mapper
-other counts methods per mapper ? (featurecounts)
-count metrics
-variantcallers per mapper ?
+variantcalling_{mapper}/
+    {variantcaller}/
+        {sample}/
+            metrics/
+            {sample}.vcf.gz
+            {sample}.vcf.gz.tbi
 """

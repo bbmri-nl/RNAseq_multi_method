@@ -1,3 +1,4 @@
+#! /bin/bash
 snakemake -p \
 	--configfile $@ \
 	--snakefile /exports/sasc/dcats/snakemake/RNAseq_multi_method/Snakefile \

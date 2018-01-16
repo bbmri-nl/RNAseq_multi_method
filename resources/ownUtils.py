@@ -197,6 +197,8 @@ def determineOutput(config, sampleSheet):
         if config["mappers"][x]["include"]]
     countTypes = [x for x in config["counting"].keys()
         if config["counting"][x]["include"]]
+    variantcallers = [x for x in config["variantcalling"].keys()
+        if config["variantcalling"][x]["include"]]
     samples = set(sampleSheet.index.levels[0].tolist())
     inputs = getInputs(sampleSheet)
     out = []
@@ -237,6 +239,7 @@ def determineOutput(config, sampleSheet):
 
         # count tables
         for countType in countTypes:
+            #TODO if star_quant and not star or star2pass skip add count tables
             out += expand("expression_measures_{mapper}/{countType}/"
             "{sample}/{sample}.tsv", sample=samples, mapper=mapper,
             countType=countType)
@@ -255,6 +258,13 @@ def determineOutput(config, sampleSheet):
             out.append("expression_measures_{mapper}/{countType}/"
                 "metrics/alignmentSummaryPercentages.tsv".format(mapper=mapper,
                 countType=countType))
+
+        # vcf and tbi files
+        for variantcaller in variantcallers:
+                out += expand("variantcalling_{mapper}/{variantcaller}/"
+                "{sample}/{sample}.{ext}",
+                variantcaller=variantcaller, mapper=mapper, sample=samples,
+                ext=["vcf.gz", "vcf.gz.tbi"])
 
     # get md5 files and add them
     out += expand("{file}.md5", file=out)

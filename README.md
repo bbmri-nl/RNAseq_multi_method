@@ -11,12 +11,12 @@
 ## Included Mappers
 - STAR
 - STAR (2 pass mode)
-- HISAT2
+- HISAT2 (doesn't work)
 
 ## Included Counting methods
 - HTSeq-count
-  - fragments per gene
-  - fragments per exon (should be removed)
+- featureCounts
+- STAR QuantMode
 
 ## Author
 Davy Cats (D.Cats@lumc.nl)

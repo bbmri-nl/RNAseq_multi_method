@@ -9,16 +9,7 @@
   },
   "cutadapt": {
     "type": "dict",
-    "default": {
-      "threads": 4,
-      "minimum_readlength": 40,
-      "quality_threshold": 20,
-      "adapterFile": [
-        "/usr/local/FastQC/FastQC-0.11.2/Configuration/contaminant_list.txt",
-        "/usr/local/FastQC/FastQC-0.11.2/Configuration/adapter_list.txt"
-      ],
-      "params": ""
-    },
+    "default": {},
     "schema": {
       "threads": {
         "type": "integer",
@@ -58,9 +49,7 @@
         "type": "dict",
         "default": {
           "include": false,
-          "index": "",
-          "params": "",
-          "threads": 8
+          "index": ""
         },
         "schema": {
           "include": {
@@ -85,9 +74,7 @@
         "type": "dict",
         "default": {
           "include": false,
-          "index": "",
-          "params": "",
-          "threads": 8
+          "index": ""
         },
         "schema": {
           "include": {
@@ -112,9 +99,7 @@
         "type": "dict",
         "default": {
           "include": false,
-          "index": "",
-          "params": "",
-          "threads": 8
+          "index": ""
         },
         "schema": {
           "include": {
@@ -146,10 +131,7 @@
         "type": "dict",
         "default": {
           "include": false,
-          "annotation_gff": "",
-          "params": "",
-          "stranded": "no",
-          "id_field": "gene_id"
+          "annotation_gff": ""
         },
         "schema": {
           "include": {
@@ -179,11 +161,7 @@
         "type": "dict",
         "default": {
           "include": false,
-          "annotation_gff": "",
-          "params": "",
-          "feature_type": "",
-          "feature_group": "",
-          "stranded": ""
+          "annotation_gff": ""
         },
         "schema": {
           "include": {
@@ -210,6 +188,55 @@
             "type": "string",
             "default": "no",
             "regex": "(no|yes|reverse)"
+          }
+        }
+      },
+      "star_quantmode": {
+        "type": "dict",
+        "default": {
+          "include": false
+        },
+        "schema": {
+          "include": {
+            "type": "boolean",
+            "default": true
+          },
+          "stranded": {
+            "type": "string",
+            "default": "no",
+            "regex": "(no|yes|reverse)"
+          },
+          "params": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  "variantcalling": {
+    "type": "dict",
+    "default": {},
+    "minlength": 1,
+    "schema": {
+      "varscan": {
+        "type": "dict",
+        "default": {
+          "include": false,
+          "reference": ""
+        },
+        "schema": {
+          "include": {
+            "type": "boolean",
+            "default": true
+          },
+          "reference": {
+            "type": "string",
+            "required": true
+          },
+          "params": {
+            "type": "string",
+            "default": ""
           }
         }
       }
