@@ -69,9 +69,8 @@ rule star_quant:
         "--outFileNamePrefix star/{wildcards.sample}/ "
         "--outStd Log 2> {log} "
         "&& ln star/{wildcards.sample}/Aligned.sortedByCoord.out.bam {output.bam} "
-        "&& ln star/{wildcards.sample}/ReadsPerGene.out.tab {output.counts}.original "
         "&& echo -e 'feature\\tcounts' > {output.counts} "
-        "&& awk 'NR>2 {{print $1 \"\\t\" ${params.col}}}' {output.counts}.original >> {output.counts}"
+        "&& awk 'NR>2 {{print $1 \"\\t\" ${params.col}}}' star/{wildcards.sample}/ReadsPerGene.out.tab >> {output.counts}"
 
 
 rule star2pass:
@@ -134,6 +133,5 @@ rule star2pass_quant:
         "--outFileNamePrefix star2pass/{wildcards.sample}/ "
         "--outStd Log 2> {log} "
         "&& ln star2pass/{wildcards.sample}/Aligned.sortedByCoord.out.bam {output.bam} "
-        "&& ln star/{wildcards.sample}/ReadsPerGene.out.tab {output.counts}.original "
         "&& echo -e 'feature\\tcounts' > {output.counts} "
-        "&& awk 'NR>2 {{print $1 \"\\t\" ${params.col}}}' {output.counts}.original >> {output.counts}"
+        "&& awk 'NR>2 {{print $1 \"\\t\" ${params.col}}}' star2pass/{wildcards.sample}/ReadsPerGene.out.tab >> {output.counts}"

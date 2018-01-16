@@ -27,6 +27,7 @@ onstart:
 onsuccess:
     print("\n\nPIPELINE COMPLETED SUCCESSFULLY\n")
     shell("echo Output directory: $(pwd)")
+    print("\n")
 
 onerror:
     print("\n\nPIPELINE FAILED\n")
