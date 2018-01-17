@@ -1,9 +1,9 @@
-#TODO add vcfstats
-#TODO adjust bamstats rule so it doesn't need to load the
-    # biopet module (lwo priority; wait for jar release)
+#TODO add combinevariants (gatk) and vcfstats
+    # gatk is not available through conda due to license
+#TODO adjust bamstats/basecounter rules so it doesn't need to load the
+    # biopet module (lwo priority; wait for jar releases)
 #TODO add more mappers and counting methods
     #TODO test hisat2 (low priority)
-    #TODO add basecounter
 #TODO make conda envs configurable (low priority)
     #TODO add version logging
 #TODO add benchmarking to rules (low priority)
@@ -60,6 +60,7 @@ include: "rules/hisat2.smk"
 include: "rules/featurecounts.smk"
 include: "rules/varscan.smk"
 include: "rules/vcf_index.smk"
+include:"rules/basecounter.smk"
 
 
 """
@@ -84,8 +85,8 @@ expression_measures_{mapper}/
         metrics/
             -TBD-
         {sample}/
-            {sample}.fragements_per_gene
-        all_samples.fragements_per_gene
+            {sample}.tsv
+        all_samples.tsv
 variantcalling_{mapper}/
     {variantcaller}/
         {sample}/

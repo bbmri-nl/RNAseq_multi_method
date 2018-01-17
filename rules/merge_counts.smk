@@ -8,13 +8,11 @@ rule merge_counts:
         "expression_measures_{mapper}/{type}/all_samples.tsv"
     conda: "../envs/R.yml"
     params:
-        idVars="feature",
-        measureVars="counts",
         source=source
     resources:
         mem=lambda wildcards, attempt: attempt * 10
     log: ".logs/merge_counts/{mapper}_{type}.log"
     shell:
         "Rscript {params.source}scripts/merge_counts.R "
-        "{params.idVars} {params.measureVars} {output} "
+        "feature counts {output} "
         "{input} > {log}"

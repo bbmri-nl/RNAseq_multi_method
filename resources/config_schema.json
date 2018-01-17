@@ -7,6 +7,29 @@
     "type": "string",
     "required": true
   },
+  "stranded": {
+    "type": "string",
+    "default": "no",
+    "regex": "(no|yes|reverse)"
+  },
+  "reference":{
+    "type": "dict",
+    "required": true,
+    "schema": {
+      "fasta": {
+        "type": "string",
+        "required": true
+      },
+      "gff": {
+        "type": "string",
+        "required": true
+      },
+      "refflat": {
+        "type": "string",
+        "required": true
+      }
+    }
+  },
   "cutadapt": {
     "type": "dict",
     "default": {},
@@ -25,16 +48,23 @@
       },
       "adapterFile": {
         "type": ["list", "string"],
-        "default": [
-          "/usr/local/FastQC/FastQC-0.11.2/Configuration/contaminant_list.txt",
-          "/usr/local/FastQC/FastQC-0.11.2/Configuration/adapter_list.txt"
-        ],
+        "default": "/usr/local/FastQC/FastQC-0.11.2/Configuration/adapter_list.txt",
         "schema": {
-          "type": "string",
+          "type": "list",
           "minlength": 1
         }
       },
       "params": {
+        "type": "string",
+        "default": ""
+      }
+    }
+  },
+  "bamstats":{
+    "type": "dict",
+    "default": {},
+    "schema": {
+      "params":{
         "type": "string",
         "default": ""
       }
@@ -130,26 +160,16 @@
       "htseq-count": {
         "type": "dict",
         "default": {
-          "include": false,
-          "annotation_gff": ""
+          "include": false
         },
         "schema": {
           "include": {
             "type": "boolean",
             "default": true
           },
-          "annotation_gff": {
-            "type": "string",
-            "required": true
-          },
           "params": {
             "type": "string",
             "default": ""
-          },
-          "stranded": {
-            "type": "string",
-            "default": "no",
-            "regex": "(no|yes|reverse)"
           },
           "id_field": {
             "type": "string",
@@ -160,17 +180,12 @@
       "featurecounts": {
         "type": "dict",
         "default": {
-          "include": false,
-          "annotation_gff": ""
+          "include": false
         },
         "schema": {
           "include": {
             "type": "boolean",
             "default": true
-          },
-          "annotation_gff": {
-            "type": "string",
-            "required": true
           },
           "params": {
             "type": "string",
@@ -183,11 +198,6 @@
           "feature_group": {
             "type": "string",
             "default": "gene_id"
-          },
-          "stranded": {
-            "type": "string",
-            "default": "no",
-            "regex": "(no|yes|reverse)"
           }
         }
       },
@@ -201,14 +211,57 @@
             "type": "boolean",
             "default": true
           },
-          "stranded": {
-            "type": "string",
-            "default": "no",
-            "regex": "(no|yes|reverse)"
-          },
           "params": {
             "type": "string",
             "default": ""
+          }
+        }
+      },
+      "basecounter_exon": {
+        "type": "dict",
+        "default": {
+          "include": false
+        },
+        "schema": {
+          "include": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "basecounter_intron": {
+        "type": "dict",
+        "default": {
+          "include": false
+        },
+        "schema": {
+          "include": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "basecounter_gene": {
+        "type": "dict",
+        "default": {
+          "include": false
+        },
+        "schema": {
+          "include": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "basecounter_transcript": {
+        "type": "dict",
+        "default": {
+          "include": false
+        },
+        "schema": {
+          "include": {
+            "type": "boolean",
+            "default": true
           }
         }
       }
@@ -222,17 +275,12 @@
       "varscan": {
         "type": "dict",
         "default": {
-          "include": false,
-          "reference": ""
+          "include": false
         },
         "schema": {
           "include": {
             "type": "boolean",
             "default": true
-          },
-          "reference": {
-            "type": "string",
-            "required": true
           },
           "params": {
             "type": "string",

@@ -239,7 +239,9 @@ def determineOutput(config, sampleSheet):
 
         # count tables
         for countType in countTypes:
-            #TODO if star_quant and not star or star2pass skip add count tables
+            if countType == "star_quantmode" and (not mapper in ["star",
+                "star2pass"]):
+                continue
             out += expand("expression_measures_{mapper}/{countType}/"
             "{sample}/{sample}.tsv", sample=samples, mapper=mapper,
             countType=countType)

@@ -67,7 +67,10 @@ path <- params$input
 counts <- read.csv(path, header = T, sep="\t", row.names = "feature")
 
 specialMarkers <- list("htseq-count"="^__", "featurecounts"="^Unassigned_",
-  "star_quantmode"="N_")
+  "star_quantmode"="N_", "basecounter_exon"="__IHOPETHISISNOTAGENENAME__",
+  "basecounter_intron"="__IHOPETHISISNOTAGENENAME__",
+  "basecounter_gene"="__IHOPETHISISNOTAGENENAME__",
+  "basecounter_transcript"="__IHOPETHISISNOTAGENENAME__")
 
 # for testing
 #for (x in 3:800){

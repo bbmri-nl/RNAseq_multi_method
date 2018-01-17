@@ -1,6 +1,6 @@
 def getProperColumn(w):
     dic =  {"no": "2", "yes": "3", "reverse": "4"}
-    return dic[config["counting"]["star_quantmode"]["stranded"]]
+    return dic[config["stranded"]]
 
 
 if config["counting"]["star_quantmode"]["include"]:

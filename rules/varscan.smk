@@ -5,7 +5,7 @@ rule varscan:
         "variantcalling_{mapper}/varscan/{sample}/{sample}.vcf.gz"
     params:
         extra=config["variantcalling"]["varscan"]["params"],
-        ref=config["variantcalling"]["varscan"]["reference"]
+        ref=config["reference"]["fasta"]
     log: ".logs/varscan/{sample}_{mapper}.log"
     conda: "../envs/varscan.yml"
     resources:

@@ -4,8 +4,8 @@ rule htseq_count:
     output:
         "expression_measures_{mapper}/htseq-count/{sample}/{sample}.tsv"
     params:
-        gff=config["counting"]["htseq-count"]["annotation_gff"],
-        stranded=config["counting"]["htseq-count"]["stranded"],
+        gff=config["reference"]["gff"],
+        stranded=config["stranded"],
         idField=config["counting"]["htseq-count"]["id_field"],
         extra=config["counting"]["htseq-count"]["params"]
     resources:

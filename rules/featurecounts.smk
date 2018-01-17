@@ -20,9 +20,9 @@ rule featurecounts:
     params:
         feature_type=config["counting"]["featurecounts"]["feature_type"],
         feature_group=config["counting"]["featurecounts"]["feature_group"],
-        gff=config["counting"]["featurecounts"]["annotation_gff"],
+        gff=config["reference"]["gff"],
         extra=config["counting"]["featurecounts"]["params"],
-        stranded=getStrandedOption(config["counting"]["featurecounts"]["stranded"]),
+        stranded=getStrandedOption(config["stranded"]),
         paired=pairedOrNot
     conda: "../envs/featurecounts.yml"
     log: ".logs/featurecounts/{mapper}/{sample}.log"
