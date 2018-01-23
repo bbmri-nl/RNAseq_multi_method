@@ -1,12 +1,10 @@
-#TODO add combinevariants (gatk) and vcfstats
-    # gatk is not available through conda due to license
 #TODO adjust bamstats/basecounter rules so it doesn't need to load the
     # biopet module (lwo priority; wait for jar releases)
 #TODO add more mappers and counting methods
-    #TODO test hisat2 (low priority)
+    #TODO fix hisat2 (don't know what the problem is...)
 #TODO make conda envs configurable (low priority)
-    #TODO add version logging
-#TODO add benchmarking to rules (low priority)
+    #TODO add version logging?
+#TODO add benchmarking to rules? (low priority)
 
 import pandas as pd
 

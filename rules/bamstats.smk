@@ -9,7 +9,7 @@ rule bamstats:
     log:
         ".logs/bamstats/{mapper}_{sample}.log"
     resources:
-        mem=lambda wildcards, attempt: attempt * 9
+        mem=lambda wildcards, attempt: attempt * 10
     shell:
         "module load biopet && "
         "biopet tool bamstats -o {wildcards.mapper}/metrics/{wildcards.sample} "

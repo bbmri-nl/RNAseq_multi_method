@@ -16,6 +16,6 @@ rule varscan:
         "samtools mpileup -f {params.ref} -d 10000000 -s -B {input} | "
         "varscan mpileup2cns --strand-filter 0 --output-vcf {params.extra} "
         "--vcf-sample-list variantcalling_{wildcards.mapper}/varscan/{wildcards.sample}/name.txt "
-        " 2> {log}| "
+        " 2> {log} | "
         "bgzip -c > {output} && "
         "rm variantcalling_{wildcards.mapper}/varscan/{wildcards.sample}/name.txt"
