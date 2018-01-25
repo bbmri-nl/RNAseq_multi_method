@@ -1,6 +1,7 @@
 rule bamstats:
     input:
-        "{mapper}/{sample}/{sample}_{mapper}.bam"
+        bam="{mapper}/{sample}/{sample}_{mapper}.bam",
+        bai="{mapper}/{sample}/{sample}_{mapper}.bam.bai"
     output:
         "{mapper}/metrics/{sample}/bamstats.json",
         "{mapper}/metrics/{sample}/bamstats.summary.json"
@@ -13,5 +14,5 @@ rule bamstats:
     shell:
         "module load biopet && "
         "biopet tool bamstats -o {wildcards.mapper}/metrics/{wildcards.sample} "
-        "--bam {input} {params.extra} > {log} && "
+        "--bam {input.bam} {params.extra} > {log} && "
         "module unload biopet"

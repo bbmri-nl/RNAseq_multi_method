@@ -8,11 +8,12 @@
 - biopet tools:
   - bamstats
   - basecounter
+  - extractadaptersfastqc
 
 ## Included Mappers
 - STAR
 - STAR 2-pass
-- HISAT2 (doesn't work)
+- HISAT2
 
 ## Included Counting methods
 - HTSeq-count

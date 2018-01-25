@@ -1,7 +1,8 @@
+#TODO make adapter list and contmainant list configurable
 #TODO adjust bamstats/basecounter rules so it doesn't need to load the
     # biopet module (lwo priority; wait for jar releases)
 #TODO add more mappers and counting methods
-    #TODO fix hisat2 (don't know what the problem is...)
+    #TODO fix hisat2
 #TODO make conda envs configurable (low priority)
     #TODO add version logging?
 #TODO add benchmarking to rules? (low priority)
@@ -45,9 +46,7 @@ rule all:
 
 
 include: "rules/md5.smk"
-include: "rules/fastqc.smk"
 include: "rules/merge_fastq.smk"
-include: "rules/cutadapt.smk"
 include: "rules/star.smk"
 include: "rules/bam_index.smk"
 include: "rules/htseq-count.smk"
@@ -58,11 +57,18 @@ include: "rules/hisat2.smk"
 include: "rules/featurecounts.smk"
 include: "rules/varscan.smk"
 include: "rules/vcf_index.smk"
-include:"rules/basecounter.smk"
+include: "rules/basecounter.smk"
+include: "rules/QC.smk"
 
 
 """
 output structure:
+QC/
+    {sample}/
+        {lane}/
+            metrics/
+                {fastqc output}
+            {sample}_{lane}{group}.fastq.gz
 raw_metrics/
     {fastqc output}
 merged/

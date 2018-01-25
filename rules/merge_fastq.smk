@@ -1,6 +1,7 @@
 rule merge_fastq_pe:
     input:
-        lambda w: expand("cleaned/{sample}_{lane}_cleaned_{group}.fastq.gz",
+        lambda w: expand(
+            "QC/{sample}/{lane}/{sample}_{lane}_cleaned_{group}.fastq.gz",
             sample=w.sample, lane=ou.getLanesForSample(w.sample, sampleSheet),
             group=w.group)
     output:
@@ -12,7 +13,8 @@ rule merge_fastq_pe:
 
 rule merge_fastq_se:
     input:
-        lambda w: expand("cleaned/{sample}_{lane}_cleaned.fastq.gz",
+        lambda w: expand(
+            "QC/{sample}/{lane}/{sample}_{lane}_cleaned.fastq.gz",
             sample=w.sample, lane=ou.getLanesForSample(w.sample, sampleSheet))
     output:
         "merged/{sample}_merged.fastq.gz"

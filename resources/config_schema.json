@@ -46,13 +46,9 @@
         "type": "integer",
         "default": 20
       },
-      "adapterFile": {
-        "type": ["list", "string"],
-        "default": "/usr/local/FastQC/FastQC-0.11.2/Configuration/adapter_list.txt",
-        "schema": {
-          "type": "list",
-          "minlength": 1
-        }
+      "extractadaptersfastqc_jar": {
+        "type": "string",
+        "default":"/exports/sasc/dcats/ExtractAdaptersFastqc-assembly-0.1.jar"
       },
       "params": {
         "type": "string",

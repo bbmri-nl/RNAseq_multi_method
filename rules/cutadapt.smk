@@ -6,7 +6,7 @@ rule cutadapt_pe:
         fastq2="cleaned/{sample}_{lane}_cleaned_2.fastq.gz",
         qc="cleaned/{sample}_{lane}.qc.txt"
     params:
-        adaptors=ou.adaptersAsParams(config),
+        adapters=ou.adaptersAsParams(config),
         qual=config["cutadapt"]["quality_threshold"],
         minlen=config["cutadapt"]["minimum_readlength"],
         extra=config["cutadapt"]["params"]
@@ -21,7 +21,7 @@ rule cutadapt_pe:
         "-q {params.qual},{params.qual} "
         "-m {params.minlen} "
         "-j {threads} "
-        "{params.adaptors} "
+        "{params.adapters} "
         "-o {output.fastq1} "
         "-p {output.fastq2} "
         "{input} "
@@ -50,7 +50,7 @@ rule cutadapt_se:
         "-q {params.qual},{params.qual} "
         "-m {params.minlen} "
         "-j {threads} "
-        "{params.adaptors} "
+        "{params.adapters} "
         "-o {output.fastq} "
         "{input} "
         "> {output.qc} 2> {log}"

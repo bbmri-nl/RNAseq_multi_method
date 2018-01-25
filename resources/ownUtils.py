@@ -126,7 +126,7 @@ def getFastq(wildcards, sampleSheet):
     return result
 
 
-def adaptersAsParams(config):
+def adaptersAsParams(config, option="-a"):
     """
     This function turns the adapters noted in the Fastqc adapter lists
     mentioned in the config file into arguments which can be given to
@@ -141,7 +141,7 @@ def adaptersAsParams(config):
         f1 = open(x, "r")
         for line in f1.readlines():
             if not line[0] in ["#", "\n"]:
-                out += " -a {} ".format(line.split("\t")[-1].strip())
+                out += " {} {} ".format(option, line.split("\t")[-1].strip())
         f1.close()
     return out
 
@@ -203,24 +203,24 @@ def determineOutput(config, sampleSheet):
     inputs = getInputs(sampleSheet)
     out = []
 
-    # raw fastqc results
-    out += expand("raw_metrics/{file}_fastqc.html",
-        file=getBasenames(inputs))
-    out += expand("raw_metrics/{file}_fastqc.zip",
-        file=getBasenames(inputs))
-
-    # cleaned fastq files
+    # QC and fastqc
     for sample in samples:
+        # raw fastqc results
         out += getFilePerSample([sample], sampleSheet,
-            "cleaned/{sample}_{lane}_cleaned.fastq.gz",
-            "cleaned/{sample}_{lane}_cleaned_{group}.fastq.gz",
+            "QC/{sample}/{lane}/metrics/{sample}_{lane}_raw.{ext}",
+            "QC/{sample}/{lane}/metrics/{sample}_{lane}_raw_{group}.{ext}",
+            lane=getLanesForSample(sample, sampleSheet), ext=["html", "zip"])
+
+        out += getFilePerSample([sample], sampleSheet,
+            "QC/{sample}/{lane}/{sample}_{lane}_cleaned.fastq.gz",
+            "QC/{sample}/{lane}/{sample}_{lane}_cleaned_{group}.fastq.gz",
             lane=getLanesForSample(sample, sampleSheet))
 
         # cleaned fastqc resulst
         out += getFilePerSample([sample], sampleSheet,
-            "cleaned/metrics/{sample}_{lane}_cleaned.fastq.gz_fastqc.html",
-            "cleaned/metrics/{sample}_{lane}_cleaned_{group}.fastq.gz_fastqc.html",
-            lane=getLanesForSample(sample, sampleSheet))
+            "QC/{sample}/{lane}/metrics/{sample}_{lane}_cleaned.{ext}",
+            "QC/{sample}/{lane}/metrics/{sample}_{lane}_cleaned_{group}.{ext}",
+            lane=getLanesForSample(sample, sampleSheet), ext=["html", "zip"])
 
     # merged fastq files
     out += getFilePerSample(samples, sampleSheet,
