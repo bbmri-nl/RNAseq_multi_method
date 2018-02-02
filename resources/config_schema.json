@@ -27,10 +27,14 @@
       "refflat": {
         "type": "string",
         "required": true
+      },
+      "dbsnp": {
+        "type": "string",
+        "required": true
       }
     }
   },
-  "cutadapt": {
+  "QC": {
     "type": "dict",
     "default": {},
     "schema": {
@@ -48,11 +52,19 @@
       },
       "extractadaptersfastqc_jar": {
         "type": "string",
-        "default":"/exports/sasc/dcats/ExtractAdaptersFastqc-assembly-0.1.jar"
+        "default": "/exports/sasc/dcats/ExtractAdaptersFastqc-assembly-0.1.jar"
       },
-      "params": {
+      "cutadapt_params": {
         "type": "string",
         "default": ""
+      },
+      "contaminants": {
+        "type": "string",
+        "default": "/usr/local/FastQC/current/Configuration/contaminant_list.txt"
+      },
+      "adapters": {
+        "type": "string",
+        "default": "/usr/local/FastQC/current/Configuration/adapter_list.txt"
       }
     }
   },
@@ -63,6 +75,20 @@
       "params":{
         "type": "string",
         "default": ""
+      }
+    }
+  },
+  "bam_processing": {
+    "type": "dict",
+    "default": {},
+    "schema": {
+      "gatk_path": {
+          "type": "string",
+          "default": "/usr/local/sasc/programs/gatk/GenomeAnalysisTK-3.8-0-ge9d806836/GenomeAnalysisTK.jar"
+      },
+      "picard_path": {
+          "type": "string",
+          "default": "/usr/local/sasc/programs/picard-tools/picard-tools-2.9.0/picard.jar"
       }
     }
   },
@@ -142,7 +168,7 @@
           },
           "threads": {
             "type": "integer",
-            "default": 8
+            "default": 4
           }
         }
       }
@@ -281,6 +307,22 @@
           "params": {
             "type": "string",
             "default": ""
+          }
+        }
+      },
+      "haplotypecaller": {
+        "type": "dict",
+        "default": {
+          "include": false
+        },
+        "schema": {
+          "include": {
+            "type": "boolean",
+            "default": true
+          },
+          "params": {
+            "type": "string",
+            "default": "-stand_call_conf 20"
           }
         }
       }

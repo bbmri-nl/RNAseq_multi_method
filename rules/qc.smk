@@ -1,4 +1,4 @@
-rule QC_pe:
+rule qc_pe:
     input:
         lambda w: ou.getFastq(w, sampleSheet)
     output:
@@ -16,18 +16,18 @@ rule QC_pe:
     resources:
         mem=lambda wildcards, attempt: attempt * 3
     params:
-        contaminant_file="/usr/local/FastQC/current/Configuration/contaminant_list.txt",
-        adapter_file="/usr/local/FastQC/current/Configuration/adapter_list.txt",
-        cutadapt_extra=config["cutadapt"]["params"],
-        quality_threshold=config["cutadapt"]["quality_threshold"],
-        minimum_length=config["cutadapt"]["minimum_readlength"],
-        extractadaptersfastqc_jar=config["cutadapt"]["extractadaptersfastqc_jar"],
+        contaminant_file=config["QC"]["contaminants"],
+        adapter_file=config["QC"]["adapters"],
+        cutadapt_extra=config["QC"]["cutadapt_params"],
+        quality_threshold=config["QC"]["quality_threshold"],
+        minimum_length=config["QC"]["minimum_readlength"],
+        extractadaptersfastqc_jar=config["QC"]["extractadaptersfastqc_jar"],
         java_extra="-Xmx1500m"
-    threads: config["cutadapt"]["threads"]
+    threads: config["QC"]["threads"]
     wrapper: "file:/exports/sasc/dcats/snakemake/wrappers/QC/QC-snakemake"
 
 
-rule QC_se:
+rule qc_se:
     input:
         lambda w: ou.getFastq(w, sampleSheet)
     output:
@@ -40,12 +40,12 @@ rule QC_se:
     resources:
         mem=lambda wildcards, attempt: attempt * 3
     params:
-        contaminant_file="/usr/local/FastQC/current/Configuration/contaminant_list.txt",
-        adapter_file="/usr/local/FastQC/current/Configuration/adapter_list.txt",
-        cutadapt_extra=config["cutadapt"]["params"],
-        quality_threshold=config["cutadapt"]["quality_threshold"],
-        minimum_length=config["cutadapt"]["minimum_readlength"],
-        extractadaptersfastqc_jar=config["cutadapt"]["extractadaptersfastqc_jar"],
-        java_extra="-Xmx1500m"
-    threads: config["cutadapt"]["threads"]
+      contaminant_file=config["QC"]["contaminants"],
+      adapter_file=config["QC"]["adapters"],
+      cutadapt_extra=config["QC"]["cutadapt_params"],
+      quality_threshold=config["QC"]["quality_threshold"],
+      minimum_length=config["QC"]["minimum_readlength"],
+      extractadaptersfastqc_jar=config["QC"]["extractadaptersfastqc_jar"],
+      java_extra="-Xmx1500m"
+    threads: config["QC"]["threads"]
     wrapper: "file:/exports/sasc/dcats/snakemake/wrappers/QC/QC-snakemake"

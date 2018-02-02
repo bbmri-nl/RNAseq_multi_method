@@ -1,10 +1,9 @@
-#TODO make adapter list and contmainant list configurable
+#TODO add handeling of phred+64 (cutadapt, split_n_cigar_reads)
+#TODO Add GATK best practises variantcalling
+    #TODO add variant filtration
 #TODO adjust bamstats/basecounter rules so it doesn't need to load the
     # biopet module (lwo priority; wait for jar releases)
-#TODO add more mappers and counting methods
-    #TODO fix hisat2
 #TODO make conda envs configurable (low priority)
-    #TODO add version logging?
 #TODO add benchmarking to rules? (low priority)
 
 import pandas as pd
@@ -30,20 +29,15 @@ onsuccess:
 
 onerror:
     print("\n\nPIPELINE FAILED\n")
-    print("Potential reasons for failure:")
-    print("- faulty config file (see above error message)")
-    print("- faulty sample sheet")
-    print("- missing inputs")
-    print("- mismatching MD5sums for inputs (see below)")
-    print("MD5sum checks for inputs:")
-    shell("cat .md5_check/*.log")
-    print("\n\nPIPELINE FAILED\n")
+    shell("echo Output directory: $(pwd)")
+    print("\n")
 
 
 rule all:
     input:
         ou.determineOutput(config, sampleSheet)
 
+ruleorder: haplotypecaller > vcf_index
 
 include: "rules/md5.smk"
 include: "rules/merge_fastq.smk"
@@ -58,7 +52,12 @@ include: "rules/featurecounts.smk"
 include: "rules/varscan.smk"
 include: "rules/vcf_index.smk"
 include: "rules/basecounter.smk"
-include: "rules/QC.smk"
+include: "rules/qc.smk"
+include: "rules/markduplicates.smk"
+include: "rules/split_n_cigar_reads.smk"
+include: "rules/baserecalibrator.smk"
+include: "rules/printreads.smk"
+include: "rules/haplotypecaller.smk"
 
 
 """

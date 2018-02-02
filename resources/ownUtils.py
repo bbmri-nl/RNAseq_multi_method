@@ -261,12 +261,25 @@ def determineOutput(config, sampleSheet):
                 "metrics/alignmentSummaryPercentages.tsv".format(mapper=mapper,
                 countType=countType))
 
+        #variant calling preprocessing
+        if len(variantcallers) > 0:
+            #mark duplicates
+            out += expand("{mapper}/{sample}/{sample}_{mapper}.mdup.{ext}",
+                mapper=mapper, sample=samples, ext=["bam", "bai", "metrics"])
+            #SplitNCigarReads
+            out += expand("{mapper}/{sample}/{sample}_{mapper}.split.{ext}",
+                mapper=mapper, sample=samples, ext=["bam", "bai"])
+            #BaseRecalibrator/ApplyBQSR
+            out += expand("{mapper}/{sample}/{sample}_{mapper}.recal.{ext}",
+                mapper=mapper, sample=samples, ext=["bam", "bai"])
+
         # vcf and tbi files
         for variantcaller in variantcallers:
                 out += expand("variantcalling_{mapper}/{variantcaller}/"
                 "{sample}/{sample}.{ext}",
                 variantcaller=variantcaller, mapper=mapper, sample=samples,
                 ext=["vcf.gz", "vcf.gz.tbi"])
+                #varinat filtration
 
     # get md5 files and add them
     out += expand("{file}.md5", file=out)

@@ -1,6 +1,6 @@
 rule varscan:
     input:
-        "{mapper}/{sample}/{sample}_{mapper}.bam"
+        "{mapper}/{sample}/{sample}_{mapper}.recal.bam"
     output:
         "variantcalling_{mapper}/varscan/{sample}/{sample}.vcf.gz"
     params:
