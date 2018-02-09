@@ -1,18 +1,18 @@
 rule split_n_cigar_reads:
     input:
         bam="{mapper}/{sample}/{sample}_{mapper}.mdup.bam",
-        bai="{mapper}/{sample}/{sample}_{mapper}.mdup.bai"
+        bai="{mapper}/{sample}/{sample}_{mapper}.mdup.bai",
     output:
         bam="{mapper}/{sample}/{sample}_{mapper}.split.bam",
         bai="{mapper}/{sample}/{sample}_{mapper}.split.bai"
     resources:
-        mem=lambda wildcards, attempt: attempt * 4
+        mem=lambda wildcards, attempt: attempt * 8
     log: ".logs/split_n_cigar_reads/{sample}_{mapper}.log"
     params:
-        gatk_path=config["bam_processing"]["gatk_path"],
-        fasta=config["reference"]["fasta"]
+        gatk_path=config["gatk"]["jar_path"],
+        fasta=config["reference"]["fasta"],
     shell:
-        "java -Xmx1500m -jar {params.gatk_path} "
+        "java -Xmx4000m -jar {params.gatk_path} "
         "-T SplitNCigarReads "
         "-R {params.fasta} "
         "-I {input.bam} "

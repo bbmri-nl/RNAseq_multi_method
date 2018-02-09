@@ -8,7 +8,7 @@ rule baserecalibrator:
         mem=lambda wildcards, attempt: attempt * 8
     log: ".logs/baserecalibrator/{sample}_{mapper}.log"
     params:
-        gatk_path=config["bam_processing"]["gatk_path"],
+        gatk_path=config["gatk"]["jar_path"],
         fasta=config["reference"]["fasta"],
         dbsnp=config["reference"]["dbsnp"]
     shell:

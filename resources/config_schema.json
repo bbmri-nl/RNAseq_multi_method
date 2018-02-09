@@ -78,19 +78,19 @@
       }
     }
   },
-  "bam_processing": {
+  "gatk": {
     "type": "dict",
     "default": {},
     "schema": {
-      "gatk_path": {
-          "type": "string",
-          "default": "/usr/local/sasc/programs/gatk/GenomeAnalysisTK-3.8-0-ge9d806836/GenomeAnalysisTK.jar"
-      },
-      "picard_path": {
-          "type": "string",
-          "default": "/usr/local/sasc/programs/picard-tools/picard-tools-2.9.0/picard.jar"
+      "jar_path": {
+        "type": "string",
+        "default": "/usr/local/sasc/programs/gatk/GenomeAnalysisTK-3.8-0-ge9d806836/GenomeAnalysisTK.jar"
       }
     }
+  },
+  "picard_path": {
+      "type": "string",
+      "default": "/usr/local/sasc/programs/picard-tools/picard-tools-2.9.0/picard.jar"
   },
   "mappers": {
     "type": "dict",
@@ -322,7 +322,11 @@
           },
           "params": {
             "type": "string",
-            "default": "-stand_call_conf 20"
+            "default": "--dontUseSoftClippedBases -stand_call_conf 20"
+          },
+          "filter_params": {
+            "type": "string",
+            "default": "-window 35 -cluster 3 -filterName \"FS\" -filter \"FS > 30.0\" -filterName \"QD\" -filter \"QD < 2.0\""
           }
         }
       }

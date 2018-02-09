@@ -1,9 +1,7 @@
 #TODO add handeling of phred+64 (cutadapt, split_n_cigar_reads)
-#TODO Add GATK best practises variantcalling
-    #TODO add variant filtration
 #TODO adjust bamstats/basecounter rules so it doesn't need to load the
     # biopet module (lwo priority; wait for jar releases)
-#TODO make conda envs configurable (low priority)
+#TODO make conda envs configurable? (low priority)
 #TODO add benchmarking to rules? (low priority)
 
 import pandas as pd
@@ -36,8 +34,6 @@ onerror:
 rule all:
     input:
         ou.determineOutput(config, sampleSheet)
-
-ruleorder: haplotypecaller > vcf_index
 
 include: "rules/md5.smk"
 include: "rules/merge_fastq.smk"

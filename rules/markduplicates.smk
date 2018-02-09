@@ -7,10 +7,10 @@ rule markduplicates:
         bai="{mapper}/{sample}/{sample}_{mapper}.mdup.bai",
         metrics="{mapper}/{sample}/{sample}_{mapper}.mdup.metrics"
     resources:
-        mem=lambda wildcards, attempt: attempt * 10
+        mem=lambda wildcards, attempt: attempt * 16
     log: ".logs/markduplicates/{sample}_{mapper}.log"
     params:
-        picard_path=config["bam_processing"]["picard_path"],
+        picard_path=config["picard_path"],
         platform="illumina" #TODO make configurable
     shell:
         "java -jar {params.picard_path} MarkDuplicates "

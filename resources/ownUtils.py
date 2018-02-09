@@ -205,22 +205,28 @@ def determineOutput(config, sampleSheet):
 
     # QC and fastqc
     for sample in samples:
+        if isSingleEnd(sample, sampleSheet):
+            QC = "QC_se"
+        else:
+            QC = "QC_pe"
         # raw fastqc results
         out += getFilePerSample([sample], sampleSheet,
-            "QC/{sample}/{lane}/metrics/{sample}_{lane}_raw.{ext}",
-            "QC/{sample}/{lane}/metrics/{sample}_{lane}_raw_{group}.{ext}",
-            lane=getLanesForSample(sample, sampleSheet), ext=["html", "zip"])
+            "{QC}/{sample}/{lane}/metrics/{sample}_{lane}_raw.{ex}",
+            "{QC}/{sample}/{lane}/metrics/{sample}_{lane}_raw_{group}.{ex}",
+            QC=QC, lane=getLanesForSample(sample, sampleSheet),
+            ex=["html", "zip"])
 
         out += getFilePerSample([sample], sampleSheet,
-            "QC/{sample}/{lane}/{sample}_{lane}_cleaned.fastq.gz",
-            "QC/{sample}/{lane}/{sample}_{lane}_cleaned_{group}.fastq.gz",
-            lane=getLanesForSample(sample, sampleSheet))
+            "{QC}/{sample}/{lane}/{sample}_{lane}_cleaned.fastq.gz",
+            "{QC}/{sample}/{lane}/{sample}_{lane}_cleaned_{group}.fastq.gz",
+            QC=QC, lane=getLanesForSample(sample, sampleSheet))
 
         # cleaned fastqc resulst
         out += getFilePerSample([sample], sampleSheet,
-            "QC/{sample}/{lane}/metrics/{sample}_{lane}_cleaned.{ext}",
-            "QC/{sample}/{lane}/metrics/{sample}_{lane}_cleaned_{group}.{ext}",
-            lane=getLanesForSample(sample, sampleSheet), ext=["html", "zip"])
+            "{QC}/{sample}/{lane}/metrics/{sample}_{lane}_cleaned.{ex}",
+            "{QC}/{sample}/{lane}/metrics/{sample}_{lane}_cleaned_{group}.{ex}",
+            QC=QC, lane=getLanesForSample(sample, sampleSheet),
+            ex=["html", "zip"])
 
     # merged fastq files
     out += getFilePerSample(samples, sampleSheet,
@@ -229,8 +235,8 @@ def determineOutput(config, sampleSheet):
 
     # bam and bai files
     for mapper in mappers:
-        out += expand("{mapper}/{sample}/{sample}_{mapper}.{ext}",
-            mapper=mapper, sample=samples, ext=["bam", "bam.bai"])
+        out += expand("{mapper}/{sample}/{sample}_{mapper}.{ex}",
+            mapper=mapper, sample=samples, ex=["bam", "bam.bai"])
 
         #bamstats
         out += expand("{mapper}/metrics/{sample}/{file}",
@@ -264,22 +270,26 @@ def determineOutput(config, sampleSheet):
         #variant calling preprocessing
         if len(variantcallers) > 0:
             #mark duplicates
-            out += expand("{mapper}/{sample}/{sample}_{mapper}.mdup.{ext}",
-                mapper=mapper, sample=samples, ext=["bam", "bai", "metrics"])
+            out += expand("{mapper}/{sample}/{sample}_{mapper}.mdup.{ex}",
+                mapper=mapper, sample=samples, ex=["bam", "bai", "metrics"])
             #SplitNCigarReads
-            out += expand("{mapper}/{sample}/{sample}_{mapper}.split.{ext}",
-                mapper=mapper, sample=samples, ext=["bam", "bai"])
+            out += expand("{mapper}/{sample}/{sample}_{mapper}.split.{ex}",
+                mapper=mapper, sample=samples, ex=["bam", "bai"])
             #BaseRecalibrator/ApplyBQSR
-            out += expand("{mapper}/{sample}/{sample}_{mapper}.recal.{ext}",
-                mapper=mapper, sample=samples, ext=["bam", "bai"])
+            out += expand("{mapper}/{sample}/{sample}_{mapper}.recal.{ex}",
+                mapper=mapper, sample=samples, ex=["bam", "bai"])
 
         # vcf and tbi files
         for variantcaller in variantcallers:
                 out += expand("variantcalling_{mapper}/{variantcaller}/"
-                "{sample}/{sample}.{ext}",
+                "{sample}/{sample}.{ex}",
                 variantcaller=variantcaller, mapper=mapper, sample=samples,
-                ext=["vcf.gz", "vcf.gz.tbi"])
-                #varinat filtration
+                ex=["vcf.gz", "vcf.gz.tbi"])
+                if variantcaller == "haplotypecaller":
+                    out += expand("variantcalling_{mapper}/{variantcaller}/"
+                    "{sample}/{sample}.filtered.vcf.gz{ex}",
+                    mapper=mapper, variantcaller=variantcaller, sample=sample,
+                    ex=["", ".tbi"])
 
     # get md5 files and add them
     out += expand("{file}.md5", file=out)

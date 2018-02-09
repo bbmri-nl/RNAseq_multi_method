@@ -7,10 +7,10 @@ rule printreads:
         bam="{mapper}/{sample}/{sample}_{mapper}.recal.bam",
         bai="{mapper}/{sample}/{sample}_{mapper}.recal.bai"
     resources:
-        mem=lambda wildcards, attempt: attempt * 8
+        mem=lambda wildcards, attempt: attempt * 10
     log: ".logs/apply_bqsr/{sample}_{mapper}.log"
     params:
-        gatk_path=config["bam_processing"]["gatk_path"],
+        gatk_path=config["gatk"]["jar_path"],
         fasta=config["reference"]["fasta"]
     shell:
         "java -Xms4000m -jar {params.gatk_path} "

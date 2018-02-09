@@ -9,6 +9,8 @@
   - bamstats
   - basecounter
   - extractadaptersfastqc
+- GATK (3.8)
+- Picard
 
 ## Included Mappers
 - STAR
@@ -24,6 +26,10 @@
   - intron
   - transcript
   - gene
+
+## Included variantcallers
+- HaplotypeCaller
+- Varscan
 
 ## Author
 Davy Cats (D.Cats@lumc.nl)
