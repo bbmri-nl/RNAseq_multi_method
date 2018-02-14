@@ -1,0 +1,25 @@
+workdir: "/exports/sasc/dcats/snakemake/testOut"
+sampleSheet: "/exports/sasc/dcats/snakemake/testOut/sample.tsv"
+reference:
+  fasta: "/usr/local/Genomes/H.Sapiens/GRCh38/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa"
+  gff: "/exports/genomes/species/H.sapiens/GRCh38_no_alt_analysis_set/annotation/features/ensembl_87/ensembl.87.gtf"
+  refflat: "/exports/genomes/species/H.sapiens/GRCh38_no_alt_analysis_set/annotation/features/ensembl_87/ensembl.87.refflat"
+  dbsnp: "/exports/genomes/species/H.sapiens/GRCh38_no_alt_analysis_set/annotation/dbsnp/dbsnp-149.vcf.gz"
+mappers:
+  star:
+    index: "/exports/sasc/dcats/GRCh38_no_alt_anaylsis_set_ensembl_87_STAR_indexes"
+  star2pass:
+    index: "/exports/sasc/dcats/GRCh38_no_alt_anaylsis_set_ensembl_87_STAR_indexes"
+  hisat2:
+    index: "/exports/sasc/dcats/GRCh38_no_alt_analysis_set_HISAR2_indexes/ref"
+counting:
+  htseq-count: {}
+  featurecounts: {}
+  star_quantmode: {}
+  basecounter_exon: {}
+  basecounter_intron: {}
+  basecounter_gene: {}
+  basecounter_transcript: {}
+variantcalling:
+  varscan: {}
+  haplotypecaller: {}
