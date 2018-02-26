@@ -286,6 +286,31 @@
             "default": true
           }
         }
+      },
+      "salmon": {
+        "type": "dict",
+        "default": {
+          "include": false,
+          "index": ""
+        },
+        "schema": {
+          "include":{
+            "type": "boolean",
+            "default": true
+          },
+          "params": {
+            "type": "string",
+            "default": ""
+          },
+          "index": {
+            "type": "string",
+            "required": true
+          },
+          "threads": {
+            "type": "integer",
+            "default": 8
+          }
+        }
       }
     }
   },

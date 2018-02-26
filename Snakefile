@@ -54,6 +54,7 @@ include: "rules/split_n_cigar_reads.smk"
 include: "rules/baserecalibrator.smk"
 include: "rules/printreads.smk"
 include: "rules/haplotypecaller.smk"
+include: "rules/salmon.smk"
 
 
 """

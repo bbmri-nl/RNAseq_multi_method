@@ -245,6 +245,8 @@ def determineOutput(config, sampleSheet):
 
         # count tables
         for countType in countTypes:
+            if countType == "salmon":
+                continue
             if countType == "star_quantmode" and (not mapper in ["star",
                 "star2pass"]):
                 continue
@@ -290,6 +292,13 @@ def determineOutput(config, sampleSheet):
                     "{sample}/{sample}.filtered.vcf.gz{ex}",
                     mapper=mapper, variantcaller=variantcaller, sample=sample,
                     ex=["", ".tbi"])
+
+    # alignment free counters:
+    if "salmon" in countTypes:
+        out += expand("expression_measures_without_alignment/salmon/"
+            "{sample}/{sample}.tsv", sample=samples)
+        out.append("expression_measures_without_alignment/salmon/"
+            "all_samples.tsv")
 
     # get md5 files and add them
     out += expand("{file}.md5", file=out)
