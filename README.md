@@ -26,10 +26,14 @@
   - intron
   - transcript
   - gene
+- Salmon (alignment free)
 
 ## Included variantcallers
 - HaplotypeCaller
 - Varscan
+
+## Other included tools:
+- Centrifuge
 
 ## Author
 Davy Cats (D.Cats@lumc.nl)

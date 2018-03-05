@@ -29,7 +29,7 @@ rule salmon:
     log: ".logs/salmon/{sample}.log"
     conda: "../envs/salmon.yml"
     shell:
-        "salmon quant -p {threads} "
+        "salmon quant -p {threads} {params.extra} "
         "-l A "
         "-i {params.index} "
         "{params.inputArgs} "

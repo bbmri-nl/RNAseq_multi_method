@@ -1,8 +1,7 @@
-#TODO add handeling of phred+64 (cutadapt, split_n_cigar_reads)
 #TODO adjust bamstats/basecounter rules so it doesn't need to load the
-    # biopet module (lwo priority; wait for jar releases)
-#TODO make conda envs configurable? (low priority)
+    # biopet module (lwo priority; wait for bioconda submissions?)
 #TODO add benchmarking to rules? (low priority)
+#TODO make memory configurable? (low priority; not for all tools, probably)
 
 import pandas as pd
 
@@ -55,7 +54,8 @@ include: "rules/baserecalibrator.smk"
 include: "rules/printreads.smk"
 include: "rules/haplotypecaller.smk"
 include: "rules/salmon.smk"
-
+include: "rules/centrifuge.smk"
+include: "rules/rnaseq_stats.smk"
 
 """
 output structure:

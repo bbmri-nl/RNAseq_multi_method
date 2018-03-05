@@ -243,6 +243,10 @@ def determineOutput(config, sampleSheet):
             mapper=mapper, sample=samples,
             file=["bamstats.json", "bamstats.summary.json"])
 
+        #rnaseq_stats
+        out += expand("{mapper}/metrics/{sample}/rnaseq_stats.{ext}",
+            mapper=mapper, sample=samples, ext=["rna_metrics", "pdf"])
+
         # count tables
         for countType in countTypes:
             if countType == "salmon":
@@ -293,12 +297,20 @@ def determineOutput(config, sampleSheet):
                     mapper=mapper, variantcaller=variantcaller, sample=sample,
                     ex=["", ".tbi"])
 
-    # alignment free counters:
+        # centrifuge
+        if config["centrifuge"]["include"]:
+            out += expand("centrifuge_{mapper}/{sample}/"
+                "{sample}_centrifuge.{ext}",
+                sample=samples, ext=["met", "report", "gz"], mapper=mapper)
+
+    # alignment free counters
     if "salmon" in countTypes:
         out += expand("expression_measures_without_alignment/salmon/"
             "{sample}/{sample}.tsv", sample=samples)
         out.append("expression_measures_without_alignment/salmon/"
             "all_samples.tsv")
+
+
 
     # get md5 files and add them
     out += expand("{file}.md5", file=out)
