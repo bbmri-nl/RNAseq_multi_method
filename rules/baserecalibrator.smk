@@ -5,7 +5,7 @@ rule baserecalibrator:
     output:
         "{mapper}/{sample}/{sample}_{mapper}.bqsr.csv"
     resources:
-        mem=lambda wildcards, attempt: attempt * 8
+        mem=lambda wildcards, attempt: attempt * 16
     log: ".logs/baserecalibrator/{sample}_{mapper}.log"
     params:
         gatk_path=config["gatk"]["jar_path"],

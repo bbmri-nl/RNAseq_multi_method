@@ -94,14 +94,29 @@ def getMD5FromSampleSheet(wildcards, sampleSheet):
     return row.iat[0,md5_i]
 
 
-def getInputs(sampleSheet):
+def getInputs(sampleSheet, R1=True, R2=True, removeNaN=True):
     """
     This function compiles a list of all input files noted in the
     samplesheet.
     """
-    inputs = sampleSheet["R1"].tolist() + sampleSheet["R2"].tolist()
-    out = [x for x in inputs if not pd.isnull(x)]
-    return out
+    inputs = []
+    if R1:
+        inputs += sampleSheet["R1"].tolist()
+    if R2:
+        inputs += sampleSheet["R2"].tolist()
+    if removeNaN:
+        out = [x for x in inputs if not pd.isnull(x)]
+        return out
+    return inputs
+
+
+def getR2forR1(R1, sampleSheet):
+    inputsR1 = getInputs(sampleSheet,True, False, False)
+    inputsR2 = getInputs(sampleSheet,False, True, False)
+    iR1 = inputsR1.index(R1)
+    R2 = inputsR2[iR1]
+    if not isinstance(R2, float):
+        return R2
 
 
 def lookForInputFile(wildcards, sampleSheet):
@@ -317,4 +332,9 @@ def determineOutput(config, sampleSheet):
 
     # raw md5 check
     out += expand(".md5_check/{file}.OK", file=getBasenames(inputs))
+
+    # fastq validation
+    R1inputs = getInputs(sampleSheet, True, False)
+    out += expand(".fastq_check/{file}.OK", file=getBasenames(R1inputs))
+
     return out

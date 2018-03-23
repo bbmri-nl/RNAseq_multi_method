@@ -25,7 +25,7 @@ rule qc_pe:
         extractadaptersfastqc_jar=config["QC"]["extractadaptersfastqc_jar"],
         java_extra="-Xmx1500m"
     threads: config["QC"]["threads"]
-    wrapper: "file:/exports/sasc/dcats/snakemake/wrappers/QC/QC-snakemake"
+    wrapper: "file:{source}wrappers/QC-snakemake".format(source=source)
 
 
 rule qc_se:
@@ -50,4 +50,4 @@ rule qc_se:
       extractadaptersfastqc_jar=config["QC"]["extractadaptersfastqc_jar"],
       java_extra="-Xmx1500m"
     threads: config["QC"]["threads"]
-    wrapper: "file:/exports/sasc/dcats/snakemake/wrappers/QC/QC-snakemake"
+    wrapper: "file:{source}wrappers/QC-snakemake".format(source=source)

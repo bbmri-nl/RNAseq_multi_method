@@ -78,6 +78,10 @@
       }
     }
   },
+  "validatefastq_jar":{
+    "type": "string",
+    "default": "/exports/sasc/dcats/validatefastq-assembly-0.1.1.jar"
+  },
   "gatk": {
     "type": "dict",
     "default": {},

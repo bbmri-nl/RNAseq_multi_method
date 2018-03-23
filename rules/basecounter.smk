@@ -39,7 +39,7 @@ rule basecounter:
         refflat=config["reference"]["refflat"]
     log: ".logs/basecounter/{mapper}_{sample}.log"
     resources:
-        mem=lambda wildcards, attempt: attempt * 10
+        mem=lambda wildcards, attempt: attempt * 16
     shell:
         "module load biopet && "
         "biopet tool basecounter -r {params.refflat} -b {input.bam} "

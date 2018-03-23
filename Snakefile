@@ -1,6 +1,5 @@
 #TODO adjust bamstats/basecounter rules so it doesn't need to load the
     # biopet module (lwo priority; wait for bioconda submissions?)
-#TODO add benchmarking to rules? (low priority)
 #TODO make memory configurable? (low priority; not for all tools, probably)
 
 import pandas as pd
@@ -56,6 +55,7 @@ include: "rules/haplotypecaller.smk"
 include: "rules/salmon.smk"
 include: "rules/centrifuge.smk"
 include: "rules/rnaseq_stats.smk"
+include: "rules/validate_fastq.smk"
 
 """
 output structure:
