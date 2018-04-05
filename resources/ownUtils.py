@@ -272,21 +272,23 @@ def determineOutput(config, sampleSheet):
             out += expand("expression_measures_{mapper}/{countType}/"
             "{sample}/{sample}.tsv", sample=samples, mapper=mapper,
             countType=countType)
-            out.append(
-                "expression_measures_{mapper}/{countType}/"
-                "all_samples.tsv".format(mapper=mapper,
-                countType=countType))
 
-            # count metrics
-            out.append("expression_measures_{mapper}/{countType}/"
-                "metrics/metrics.html".format(mapper=mapper,
-                countType=countType))
-            out.append("expression_measures_{mapper}/{countType}/"
-                "metrics/alignmentSummary.tsv".format(mapper=mapper,
-                countType=countType))
-            out.append("expression_measures_{mapper}/{countType}/"
-                "metrics/alignmentSummaryPercentages.tsv".format(mapper=mapper,
-                countType=countType))
+            if config["merge_counts"]:
+                out.append(
+                    "expression_measures_{mapper}/{countType}/"
+                    "all_samples.tsv".format(mapper=mapper,
+                    countType=countType))
+
+                # count metrics
+                out.append("expression_measures_{mapper}/{countType}/"
+                    "metrics/metrics.html".format(mapper=mapper,
+                    countType=countType))
+                out.append("expression_measures_{mapper}/{countType}/"
+                    "metrics/alignmentSummary.tsv".format(mapper=mapper,
+                    countType=countType))
+                out.append("expression_measures_{mapper}/{countType}/"
+                    "metrics/alignmentSummaryPercentages.tsv".format(
+                    mapper=mapper, countType=countType))
 
         #variant calling preprocessing
         if len(variantcallers) > 0:

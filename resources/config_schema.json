@@ -12,6 +12,10 @@
     "default": "no",
     "regex": "(no|yes|reverse)"
   },
+  "merge_counts": {
+    "type": "boolean",
+    "default": true
+  },
   "reference":{
     "type": "dict",
     "required": true,
