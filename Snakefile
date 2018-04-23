@@ -32,6 +32,13 @@ onerror:
 rule all:
     input:
         ou.determineOutput(config, sampleSheet)
+    output:
+        "pipeline_summary.json"
+    resources:
+        mem=lambda wildcards, attempt: attempt * 3
+    script:
+        "scripts/pipeline_summary.py"
+
 
 include: "rules/md5.smk"
 include: "rules/merge_fastq.smk"

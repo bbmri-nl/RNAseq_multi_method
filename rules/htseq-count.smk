@@ -1,6 +1,6 @@
 rule htseq_count:
     input:
-        "{mapper}/{sample}/{sample}_{mapper}.bam"
+        "{mapper}/{sample}/{sample}_{mapper}.mdup.bam"
     output:
         "expression_measures_{mapper}/htseq-count/{sample}/{sample}.tsv"
     params:
@@ -9,7 +9,7 @@ rule htseq_count:
         idField=config["counting"]["htseq-count"]["id_field"],
         extra=config["counting"]["htseq-count"]["params"]
     resources:
-        mem=lambda wildcards, attempt: attempt * 3
+        mem=lambda wildcards, attempt: attempt * 10
     log:
         ".logs/htseq_count/{mapper}/{sample}.log"
     conda: "../envs/htseq.yml"

@@ -13,7 +13,7 @@ rule qc_pe:
         clean_zip_R1="QC_pe/{sample}/{lane}/metrics/{sample}_{lane}_cleaned_1.zip",
         clean_zip_R2="QC_pe/{sample}/{lane}/metrics/{sample}_{lane}_cleaned_2.zip",
         qc_report="QC_pe/{sample}/{lane}/cutadapt_qc.txt",
-        encoding="QC_pe/{sample}/{lane}/phred_encoding.txt"
+        encoding=temp("QC_pe/{sample}/{lane}/phred_encoding.txt")
     resources:
         mem=lambda wildcards, attempt: attempt * 3
     params:
@@ -38,7 +38,7 @@ rule qc_se:
         clean_html_R1="QC_se/{sample}/{lane}/metrics/{sample}_{lane}_cleaned.html",
         clean_zip_R1="QC_se/{sample}/{lane}/metrics/{sample}_{lane}_cleaned.zip",
         qc_report="QC_se/{sample}/{lane}/cutadapt_qc.txt",
-        encoding="QC_se/{sample}/{lane}/phred_encoding.txt"
+        encoding=temp("QC_se/{sample}/{lane}/phred_encoding.txt")
     resources:
         mem=lambda wildcards, attempt: attempt * 3
     params:

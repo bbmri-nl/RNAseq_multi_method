@@ -18,7 +18,7 @@ rule hisat2:
             "merged/{sample}_merged.fastq.gz",
             "merged/{sample}_merged_{group}.fastq.gz")
     output:
-        "hisat2/{sample}/{sample}_hisat2.bam"
+        temp("hisat2/{sample}/{sample}_hisat2.bam")
     params:
         index=config["mappers"]["hisat2"]["index"],
         extra=config["mappers"]["hisat2"]["params"],

@@ -14,7 +14,7 @@ def getStrandedOption(x):
 
 rule featurecounts:
     input:
-        "{mapper}/{sample}/{sample}_{mapper}.bam"
+        "{mapper}/{sample}/{sample}_{mapper}.mdup.bam"
     output:
         "expression_measures_{mapper}/featurecounts/{sample}/{sample}.tsv"
     params:
@@ -36,7 +36,7 @@ rule featurecounts:
         "-g {params.feature_group} "
         "-a {params.gff} "
         "-o {output}.original "
-        "{input} > {log} && "
+        "{input} 2> {log} && "
         "echo -e 'feature\\tcounts' > {output} && "
         "awk 'NR>2 {{print $1 \"\\t\" $NF}}' {output}.original >> {output} && "
         "tail -n +3 {output}.original.summary >> {output}"

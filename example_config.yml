@@ -20,6 +20,10 @@ counting:
   basecounter_intron: {}
   basecounter_gene: {}
   basecounter_transcript: {}
+  salmon:
+    index: "/exports/sasc/dcats/GRCh38_ensemble_91_SALMON_indexes"
 variantcalling:
   varscan: {}
   haplotypecaller: {}
+centrifuge:
+  index: "/exports/sasc/project-187-virobiom/refseq/index/refseq"

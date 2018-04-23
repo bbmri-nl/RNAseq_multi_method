@@ -1,7 +1,7 @@
 rule bamstats:
     input:
-        bam="{mapper}/{sample}/{sample}_{mapper}.bam",
-        bai="{mapper}/{sample}/{sample}_{mapper}.bam.bai"
+        bam="{mapper}/{sample}/{sample}_{mapper}.mdup.bam",
+        bai="{mapper}/{sample}/{sample}_{mapper}.mdup.bai"
     output:
         "{mapper}/metrics/{sample}/bamstats.json",
         "{mapper}/metrics/{sample}/bamstats.summary.json"

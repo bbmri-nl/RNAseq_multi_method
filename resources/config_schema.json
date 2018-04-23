@@ -16,6 +16,10 @@
     "type": "boolean",
     "default": true
   },
+  "generate_md5": {
+    "type": "boolean",
+    "default": true
+  },
   "reference":{
     "type": "dict",
     "required": true,

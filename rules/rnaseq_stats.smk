@@ -5,8 +5,8 @@ def getProperStrandPicard(w):
 
 rule rnaseq_stats:
     input:
-        bam="{mapper}/{sample}/{sample}_{mapper}.bam",
-        bai="{mapper}/{sample}/{sample}_{mapper}.bam.bai"
+        bam="{mapper}/{sample}/{sample}_{mapper}.mdup.bam",
+        bai="{mapper}/{sample}/{sample}_{mapper}.mdup.bai"
     output:
         met="{mapper}/metrics/{sample}/rnaseq_stats.rna_metrics",
         pdf="{mapper}/metrics/{sample}/rnaseq_stats.pdf"

@@ -8,8 +8,8 @@ def getBasecounterOutput(w):
 
 rule basecounter:
     input:
-        bam="{mapper}/{sample}/{sample}_{mapper}.bam",
-        bai="{mapper}/{sample}/{sample}_{mapper}.bam.bai"
+        bam="{mapper}/{sample}/{sample}_{mapper}.mdup.bam",
+        bai="{mapper}/{sample}/{sample}_{mapper}.mdup.bai"
     output:
         "expression_measures_{mapper}/.basecounter/{sample}/"
             "{sample}.base.exon.counts",
@@ -39,7 +39,7 @@ rule basecounter:
         refflat=config["reference"]["refflat"]
     log: ".logs/basecounter/{mapper}_{sample}.log"
     resources:
-        mem=lambda wildcards, attempt: attempt * 16
+        mem=lambda wildcards, attempt: attempt * 32
     shell:
         "module load biopet && "
         "biopet tool basecounter -r {params.refflat} -b {input.bam} "

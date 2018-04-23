@@ -17,7 +17,7 @@ rule star:
             "merged/{sample}_merged.fastq.gz",
             "merged/{sample}_merged_{group}.fastq.gz")
     output:
-        "star/{sample}/{sample}_star.bam"
+        temp("star/{sample}/{sample}_star.bam")
     params:
         index=config["mappers"]["star"]["index"],
         extra=config["mappers"]["star"]["params"]
@@ -45,7 +45,7 @@ rule star_quant:
             "merged/{sample}_merged.fastq.gz",
             "merged/{sample}_merged_{group}.fastq.gz")
     output:
-        bam="star/{sample}/{sample}_star.bam",
+        bam=temp("star/{sample}/{sample}_star.bam"),
         counts="expression_measures_star/star_quantmode/{sample}/{sample}.tsv"
     params:
         index=config["mappers"]["star"]["index"],
@@ -79,7 +79,7 @@ rule star2pass:
             "merged/{sample}_merged.fastq.gz",
             "merged/{sample}_merged_{group}.fastq.gz")
     output:
-        "star2pass/{sample}/{sample}_star2pass.bam"
+        temp("star2pass/{sample}/{sample}_star2pass.bam")
     params:
         index=config["mappers"]["star2pass"]["index"],
         extra=config["mappers"]["star2pass"]["params"]
@@ -108,7 +108,7 @@ rule star2pass_quant:
             "merged/{sample}_merged.fastq.gz",
             "merged/{sample}_merged_{group}.fastq.gz")
     output:
-        bam="star2pass/{sample}/{sample}_star2pass.bam",
+        bam=temp("star2pass/{sample}/{sample}_star2pass.bam"),
         counts="expression_measures_star2pass/star_quantmode/{sample}/{sample}.tsv"
     params:
         index=config["mappers"]["star2pass"]["index"],

@@ -18,11 +18,12 @@ rule validate_fastq:
         lambda w: getValidateFastqInputs(w, sampleSheet)
     output:
         touch(".fastq_check/{file}.OK")
+    priority: 50
     params:
         validatefastq_jar=config["validatefastq_jar"],
         inputArgs=lambda wildcards, input: getValidateFastqInputsArgs(input)
     resources:
-        mem=lambda wildcards, attempt: attempt * 3
+        mem=lambda wildcards, attempt: attempt * 16
     log:
         ".validate_fastq/{file}.log"
     shell:

@@ -4,10 +4,10 @@ rule printreads:
         bai="{mapper}/{sample}/{sample}_{mapper}.split.bai",
         bqsr="{mapper}/{sample}/{sample}_{mapper}.bqsr.csv"
     output:
-        bam="{mapper}/{sample}/{sample}_{mapper}.recal.bam",
-        bai="{mapper}/{sample}/{sample}_{mapper}.recal.bai"
+        bam=temp("{mapper}/{sample}/{sample}_{mapper}.recal.bam"),
+        bai=temp("{mapper}/{sample}/{sample}_{mapper}.recal.bai")
     resources:
-        mem=lambda wildcards, attempt: attempt * 10
+        mem=lambda wildcards, attempt: attempt * 12
     log: ".logs/apply_bqsr/{sample}_{mapper}.log"
     params:
         gatk_path=config["gatk"]["jar_path"],

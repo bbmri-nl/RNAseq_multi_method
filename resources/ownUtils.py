@@ -243,15 +243,10 @@ def determineOutput(config, sampleSheet):
             QC=QC, lane=getLanesForSample(sample, sampleSheet),
             ex=["html", "zip"])
 
-    # merged fastq files
-    out += getFilePerSample(samples, sampleSheet,
-        "merged/{sample}_merged.fastq.gz",
-        "merged/{sample}_merged_{group}.fastq.gz")
-
     # bam and bai files
     for mapper in mappers:
-        out += expand("{mapper}/{sample}/{sample}_{mapper}.{ex}",
-            mapper=mapper, sample=samples, ex=["bam", "bam.bai"])
+        out += expand("{mapper}/{sample}/{sample}_{mapper}.mdup.{ex}",
+            mapper=mapper, sample=samples, ex=["bam", "bai"])
 
         #bamstats
         out += expand("{mapper}/metrics/{sample}/{file}",
@@ -290,29 +285,19 @@ def determineOutput(config, sampleSheet):
                     "metrics/alignmentSummaryPercentages.tsv".format(
                     mapper=mapper, countType=countType))
 
-        #variant calling preprocessing
-        if len(variantcallers) > 0:
-            #mark duplicates
-            out += expand("{mapper}/{sample}/{sample}_{mapper}.mdup.{ex}",
-                mapper=mapper, sample=samples, ex=["bam", "bai", "metrics"])
-            #SplitNCigarReads
-            out += expand("{mapper}/{sample}/{sample}_{mapper}.split.{ex}",
-                mapper=mapper, sample=samples, ex=["bam", "bai"])
-            #BaseRecalibrator/ApplyBQSR
-            out += expand("{mapper}/{sample}/{sample}_{mapper}.recal.{ex}",
-                mapper=mapper, sample=samples, ex=["bam", "bai"])
-
         # vcf and tbi files
         for variantcaller in variantcallers:
+            if variantcaller == "haplotypecaller":
+                out += expand("variantcalling_{mapper}/{variantcaller}/"
+                "{sample}/{sample}.filtered.vcf.gz{ex}",
+                mapper=mapper, variantcaller=variantcaller, sample=samples,
+                ex=["", ".tbi"])
+            else:
                 out += expand("variantcalling_{mapper}/{variantcaller}/"
                 "{sample}/{sample}.{ex}",
                 variantcaller=variantcaller, mapper=mapper, sample=samples,
                 ex=["vcf.gz", "vcf.gz.tbi"])
-                if variantcaller == "haplotypecaller":
-                    out += expand("variantcalling_{mapper}/{variantcaller}/"
-                    "{sample}/{sample}.filtered.vcf.gz{ex}",
-                    mapper=mapper, variantcaller=variantcaller, sample=sample,
-                    ex=["", ".tbi"])
+
 
         # centrifuge
         if config["centrifuge"]["include"]:
@@ -324,13 +309,15 @@ def determineOutput(config, sampleSheet):
     if "salmon" in countTypes:
         out += expand("expression_measures_without_alignment/salmon/"
             "{sample}/{sample}.tsv", sample=samples)
-        out.append("expression_measures_without_alignment/salmon/"
-            "all_samples.tsv")
+        if config["merge_counts"]:
+            out.append("expression_measures_without_alignment/salmon/"
+                "all_samples.tsv")
 
 
 
     # get md5 files and add them
-    out += expand("{file}.md5", file=out)
+    if config["generate_md5"]:
+        out += expand("{file}.md5", file=out)
 
     # raw md5 check
     out += expand(".md5_check/{file}.OK", file=getBasenames(inputs))

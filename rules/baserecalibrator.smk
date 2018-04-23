@@ -3,7 +3,7 @@ rule baserecalibrator:
         bam="{mapper}/{sample}/{sample}_{mapper}.split.bam",
         bai="{mapper}/{sample}/{sample}_{mapper}.split.bai"
     output:
-        "{mapper}/{sample}/{sample}_{mapper}.bqsr.csv"
+        temp("{mapper}/{sample}/{sample}_{mapper}.bqsr.csv")
     resources:
         mem=lambda wildcards, attempt: attempt * 16
     log: ".logs/baserecalibrator/{sample}_{mapper}.log"

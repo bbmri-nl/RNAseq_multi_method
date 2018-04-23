@@ -3,10 +3,10 @@ rule split_n_cigar_reads:
         bam="{mapper}/{sample}/{sample}_{mapper}.mdup.bam",
         bai="{mapper}/{sample}/{sample}_{mapper}.mdup.bai",
     output:
-        bam="{mapper}/{sample}/{sample}_{mapper}.split.bam",
-        bai="{mapper}/{sample}/{sample}_{mapper}.split.bai"
+        bam=temp("{mapper}/{sample}/{sample}_{mapper}.split.bam"),
+        bai=temp("{mapper}/{sample}/{sample}_{mapper}.split.bai")
     resources:
-        mem=lambda wildcards, attempt: attempt * 8
+        mem=lambda wildcards, attempt: attempt * 12
     log: ".logs/split_n_cigar_reads/{sample}_{mapper}.log"
     params:
         gatk_path=config["gatk"]["jar_path"],

@@ -5,8 +5,8 @@ rule haplotypecaller:
         bam="{mapper}/{sample}/{sample}_{mapper}.recal.bam",
         bai="{mapper}/{sample}/{sample}_{mapper}.recal.bai"
     output:
-        vcf="variantcalling_{mapper}/haplotypecaller/{sample}/{sample}.vcf.gz",
-        tbi="variantcalling_{mapper}/haplotypecaller/{sample}/{sample}.vcf.gz.tbi",
+        vcf=temp("variantcalling_{mapper}/haplotypecaller/{sample}/{sample}.vcf.gz"),
+        tbi=temp("variantcalling_{mapper}/haplotypecaller/{sample}/{sample}.vcf.gz.tbi"),
         vcf_f="variantcalling_{mapper}/haplotypecaller/{sample}/{sample}.filtered.vcf.gz",
         tbi_f="variantcalling_{mapper}/haplotypecaller/{sample}/{sample}.filtered.vcf.gz.tbi"
     resources:

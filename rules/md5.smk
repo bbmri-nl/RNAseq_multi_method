@@ -3,6 +3,7 @@ rule md5:
         "{file}"
     output:
         "{file}.md5"
+    priority: 10
     resources:
         mem=lambda wildcards, attempt: attempt * 3
     shell:
@@ -14,6 +15,7 @@ rule md5_check_raw:
         lambda w: ou.lookForInputFile(w, sampleSheet)
     output:
         touch(".md5_check/{file}.OK")
+    priority: 50
     params:
         md5=lambda w: ou.getMD5FromSampleSheet(w, sampleSheet)
     resources:
