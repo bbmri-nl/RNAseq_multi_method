@@ -324,6 +324,9 @@ def determineOutput(config, sampleSheet):
 
     # fastq validation
     R1inputs = getInputs(sampleSheet, True, False)
-    out += expand(".fastq_check/{file}.OK", file=getBasenames(R1inputs))
+    out += expand(".validate_fastq/{file}.OK", file=getBasenames(R1inputs))
+
+    # annotation validation
+    out.append(".validate_annotation/OK")
 
     return out

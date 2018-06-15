@@ -63,6 +63,7 @@ include: "rules/salmon.smk"
 include: "rules/centrifuge.smk"
 include: "rules/rnaseq_stats.smk"
 include: "rules/validate_fastq.smk"
+include: "rules/validate_annotation.smk"
 
 """
 output structure:

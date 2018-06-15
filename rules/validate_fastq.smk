@@ -17,7 +17,7 @@ rule validate_fastq:
     input:
         lambda w: getValidateFastqInputs(w, sampleSheet)
     output:
-        touch(".fastq_check/{file}.OK")
+        touch(".validate_fastq/{file}.OK")
     priority: 50
     params:
         validatefastq_jar=config["validatefastq_jar"],
