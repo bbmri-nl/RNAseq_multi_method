@@ -46,7 +46,7 @@ rule getunmapped_pe_R1:
     input:
         "{mapper}/{sample}/{sample}_{mapper}.bam"
     output:
-        temp("centrifuge_{mapper}/{sample}/input/umapped_1.sam")
+        temp("centrifuge_{mapper}/{sample}/input/unmapped_1.sam")
     threads: 4
     conda:
         "../envs/samtools.yml"
@@ -59,7 +59,7 @@ rule getunmapped_pe_R2:
     input:
         "{mapper}/{sample}/{sample}_{mapper}.bam"
     output:
-        temp("centrifuge_{mapper}/{sample}/input/umapped_2.sam")
+        temp("centrifuge_{mapper}/{sample}/input/unmapped_2.sam")
     threads: 4
     conda:
         "../envs/samtools.yml"
@@ -72,7 +72,7 @@ rule getunmapped_pe_R1R2:
     input:
         "{mapper}/{sample}/{sample}_{mapper}.bam"
     output:
-        temp("centrifuge_{mapper}/{sample}/input/umapped_both.sam")
+        temp("centrifuge_{mapper}/{sample}/input/unmapped_both.sam")
     threads: 4
     conda:
         "../envs/samtools.yml"
@@ -83,11 +83,11 @@ rule getunmapped_pe_R1R2:
 
 rule getunmapped_pe_merge:
     input:
-        "centrifuge_{mapper}/{sample}/input/umapped_both.sam",
-        "centrifuge_{mapper}/{sample}/input/umapped_2.sam",
-        "centrifuge_{mapper}/{sample}/input/umapped_1.sam"
+        "centrifuge_{mapper}/{sample}/input/unmapped_both.sam",
+        "centrifuge_{mapper}/{sample}/input/unmapped_2.sam",
+        "centrifuge_{mapper}/{sample}/input/unmapped_1.sam"
     output:
-        temp("centrifuge_{mapper}/{sample}/input/umapped_all.sam")
+        temp("centrifuge_{mapper}/{sample}/input/unmapped_all.sam")
     conda:
         "../envs/samtools.yml"
     resources:
@@ -97,9 +97,9 @@ rule getunmapped_pe_merge:
 
 rule getunmapped_pe_sort:
     input:
-        "centrifuge_{mapper}/{sample}/input/umapped_all.sam"
+        "centrifuge_{mapper}/{sample}/input/unmapped_all.sam"
     output:
-        temp("centrifuge_{mapper}/{sample}/input/umapped_pe.sam")
+        temp("centrifuge_{mapper}/{sample}/input/unmapped_pe.bam")
     threads: 4
     conda:
         "../envs/samtools.yml"
@@ -109,11 +109,12 @@ rule getunmapped_pe_sort:
         "samtools sort -@ {threads} "
         "-n "
         "-o {output} "
-        "-T centrifuge_{wildcards.mapper}/{wildcards.sample}/tmp"
+        "-T centrifuge_{wildcards.mapper}/{wildcards.sample}/tmp "
+        "{input}"
 
 rule getunmapped_pe_fastq:
     input:
-        "centrifuge_{mapper}/{sample}/input/umapped_pe.sam"
+        "centrifuge_{mapper}/{sample}/input/unmapped_pe.bam"
     output:
         r1="centrifuge_{mapper}/{sample}/input/unmapped_1.fq",
         r2="centrifuge_{mapper}/{sample}/input/unmapped_2.fq"
@@ -126,22 +127,22 @@ rule getunmapped_pe_fastq:
         "-fq {output.r1} "
         "-fq2 {output.r2}"
 
-rule getunmapped_se_sam:
+rule getunmapped_se_bam:
     input:
         "{mapper}/{sample}/{sample}_{mapper}.bam"
     output:
-        temp("centrifuge_{mapper}/{sample}/input/umapped_se.sam")
+        temp("centrifuge_{mapper}/{sample}/input/unmapped_se.bam")
     threads: 4
     conda:
         "../envs/samtools.yml"
     resources:
         mem=lambda wildcards, attempt: attempt * 5
     shell:
-        "samtools view -@ {threads} -h -f 4 {input} > {output}"
+        "samtools view -b -@ {threads} -h -f 4 {input} > {output}"
 
 rule getunmapped_se_fastq:
     input:
-        "centrifuge_{mapper}/{sample}/input/umapped_se.sam"
+        "centrifuge_{mapper}/{sample}/input/unmapped_se.bam"
     output:
         "centrifuge_{mapper}/{sample}/input/unmapped.fq"
     conda:
