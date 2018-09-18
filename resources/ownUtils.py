@@ -254,8 +254,9 @@ def determineOutput(config, sampleSheet):
             file=["bamstats.json", "bamstats.summary.json"])
 
         #rnaseq_stats
-        out += expand("{mapper}/metrics/{sample}/rnaseq_stats.{ext}",
-            mapper=mapper, sample=samples, ext=["rna_metrics", "pdf"])
+        if config["rnaseq_stats"]:
+            out += expand("{mapper}/metrics/{sample}/rnaseq_stats.{ext}",
+                mapper=mapper, sample=samples, ext=["rna_metrics", "pdf"])
 
         # count tables
         for countType in countTypes:

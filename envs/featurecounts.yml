@@ -3,4 +3,4 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - subread = 1.6
+  - subread = 1.6.2
